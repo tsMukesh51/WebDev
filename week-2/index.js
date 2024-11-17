@@ -1,74 +1,76 @@
-const fs = require("fs");
+// const fs = require("fs");
 
-// function sum(a) {
-//     return a * (a + 1) / 2;
-// }
+// // function sum(a) {
+// //     return a * (a + 1) / 2;
+// // }
 
-// let ans = sum(10);
-// console.log(ans);
+// // let ans = sum(10);
+// // console.log(ans);
 
-// function print (err, data) {
-//     if(err) {
-//         console.log(err.message);
-//     } else {
-//         console.log(data);
-//     }
-// }
+// // function print (err, data) {
+// //     if(err) {
+// //         console.log(err.message);
+// //     } else {
+// //         console.log(data);
+// //     }
+// // }
 
-// fs.readFile("aa.txt", "utf-8", print);
+// // fs.readFile("aa.txt", "utf-8", print);
 
-// console.log("Start");
+// // console.log("Start");
 
-// function dump() {
-//     console.log("timed");
-// }
+// // function dump() {
+// //     console.log("timed");
+// // }
 
-// setTimeout(dump, 100);
+// // setTimeout(dump, 100);
 
-// let i = 0;
-// for(; i < 10000000; i++) {}
+// // let i = 0;
+// // for(; i < 10000000; i++) {}
 
-// console.log(i);
+// // console.log(i);
 
-// console.log("Done");
+// // console.log("Done");
 
-// function setTimeoutPromisified(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
+// // function setTimeoutPromisified(ms) {
+// //     return new Promise(resolve => setTimeout(resolve, ms));
+// //   }
+
+// //   function callback() {
+// //       console.log("3 seconds have passed");
+// //   }
+
+// //   setTimeoutPromisified(3000).then(callback)
+
+// class MyProm {
+//   constructor(fn) {
+//     this.cbFnLs = [];
+//     fn(() => {
+//       this.cbFnLs.forEach((fn) => fn());
+//     });
 //   }
-
-//   function callback() {
-//       console.log("3 seconds have passed");
+//   then(fn) {
+//     this.cbFnLs.push(fn);
 //   }
+// }
 
-//   setTimeoutPromisified(3000).then(callback)
+// function readFilePro(fileP) {
+//   return new Promise((resolve) => {
+//     fs.readFile(fileP, "utf-8", (err, data) => {
+//       if (err) resolve(err);
+//       resolve(data);
+//     });
+//   });
+// }
 
-class MyProm {
-  constructor(fn) {
-    this.cbFnLs = [];
-    fn(() => {
-      this.cbFnLs.forEach((fn) => fn());
-    });
-  }
-  then(fn) {
-    this.cbFnLs.push(fn);
-  }
-}
+// console.log("start");
 
-function readFilePro(fileP) {
-  return new Promise((resolve) => {
-    fs.readFile(fileP, "utf-8", (err, data) => {
-      if (err) resolve(err);
-      resolve(data);
-    });
-  });
-}
+// const p = readFilePro("./data/a.txt");
 
-console.log("start");
+// p.then((res) => {
+//   console.log(res);
+// });
 
-const p = readFilePro("./data/a.txt");
+// console.log("end");
 
-p.then((res) => {
-  console.log(res);
-});
-
-console.log("end");
+console.log(process.argv);
