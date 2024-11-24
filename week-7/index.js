@@ -1,56 +1,110 @@
 const express = require("express");
-const { userModel, todoModel } = require("./db");
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { z } = require('zod');
+const { userModel, todoModel } = require("./db");
+const { JWT_SECRET, auth } = require('./auth');
 
-const JWT_SECRET = 'getOut';
 const app = express();
 const connection = mongoose.connect('mongodb+srv://testUser:44YwQ4GB9FBY71JV@cluster0.tabzq.mongodb.net/todo-app')
 
 app.use(express.json());
 
-function auth(req, res, next) {
-    const token = req.headers.token;
-    try {
-        user = jwt.verify(token, JWT_SECRET);
-        req.userId = user.id;
-        next();
-    }
-    catch {
-        res.status(403).json({
-            msg: "Please login to continue"
-        });
-    }
-}
 
 app.post("/signup", async function (req, res) {
-    const { name, email, password } = req.body;
-    const creating = await userModel.create({
-        name: name,
-        email: email,
-        password: password
+    const reqBody = z.object({
+        email: z.string().email().max(50),
+        password: z.string().min(6)
+            .refine((password) => {
+                /[A-Z]/.test(password)
+            }, { message: "Required one upper case letter." })
+            .refine((password) => {
+                /[a-z]/.test(password)
+            }, { message: "Required one lower case letter." })
+            .refine((password) => {
+                /[0-9]/.test(password)
+            }, { message: "Required one number letter." })
+            .refine((password) => {
+                /[!@#$%^&*]/.test(password)
+            }, { message: "Required one special charecter." }),
+        name: z.string().min(5).max(50)
     });
-    console.log(creating);
-    res.json({
-        msg: 'Account created'
-    });
+
+    const parsedBody = reqBody.safeParse(req.body);
+    if (!parsedBody.success) {
+        res.json({
+            msg: "Incorrect format",
+            error: parsedBody.error.issues
+        })
+        return;
+    }
+
+    const hashedPass = await bcrypt.hash(password, 5);
+    try {
+        const creating = await userModel.create({
+            name: name,
+            email: email,
+            password: hashedPass
+        });
+        res.json({
+            msg: 'Account created'
+        });
+    } catch (err) {
+        console.log(err);
+        res.json({
+            msg: 'Email Id already in use'
+        })
+    }
 });
 
 
 app.post("/signin", async function (req, res) {
+    const reqBody = z.object({
+        email: z.string().email().max(50),
+        password: z.string().min(6)
+            .refine((password) => {
+                /[A-Z]/.test(password)
+            }, { message: "Required one upper case letter." })
+            .refine((password) => {
+                /[a-z]/.test(password)
+            }, { message: "Required one lower case letter." })
+            .refine((password) => {
+                /[0-9]/.test(password)
+            }, { message: "Required one number letter." })
+            .refine((password) => {
+                /[!@#$%^&*]/.test(password)
+            }, { message: "Required one special charecter." })
+    });
+
+    const parsedBody = reqBody.safeParse(req.body);
+    if (!parsedBody.success) {
+        res.json({
+            msg: "Incorrect format",
+            error: parsedBody.error.issues
+        })
+        return;
+    }
+
     const { email, password } = req.body;
     const user = await userModel.findOne({
-        email: email,
-        password: password
+        email: email
     });
     if (user) {
-        const userjwt = jwt.sign({ id: user._id }, JWT_SECRET);
-        res.json({ token: userjwt });
+        const isValidPass = await bcrypt.compare(password, user.password);
+        if (isValidPass) {
+            const userjwt = jwt.sign({ id: user._id }, JWT_SECRET);
+            res.json({ token: userjwt });
+        } else {
+            res.status(403).json({
+                msg: 'Wrong password'
+            });
+        }
     }
     else {
-        res.status(403).json({
-            msg: "Wrong credentials"
-        })
+        res.status(404).json({
+            msg: "Account with email not found"
+        });
     }
 
 });
