@@ -5,6 +5,7 @@ const { z } = require('zod');
 require('dotenv').config();
 
 const { userModel } = require('../db');
+const { userAuth } = require('../userAuth');
 
 const userRouter = Router();
 
@@ -96,7 +97,7 @@ userRouter.post('/signin', async function (req, res) {
 });
 
 
-userRouter.get('/my-course', async function (req, res) {
+userRouter.get('/my-course', userAuth, async function (req, res) {
     res.json({
         msg: 'hit /user/my-course'
     });
