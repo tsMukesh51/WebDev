@@ -5,7 +5,7 @@ const { z } = require('zod');
 require('dotenv').config();
 
 const { userModel } = require('../db');
-const { userAuth } = require('../userAuth');
+const { userAuth } = require('../middleware/userAuth');
 
 const userRouter = Router();
 
@@ -93,11 +93,11 @@ userRouter.post('/signin', async function (req, res) {
             msg: 'Account with email Not Found'
         });
     }
-
 });
 
 
 userRouter.get('/my-course', userAuth, async function (req, res) {
+    console.log(req.body.user);
     res.json({
         msg: 'hit /user/my-course'
     });

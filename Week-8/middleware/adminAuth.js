@@ -1,22 +1,28 @@
 const jwt = require('jsonwebtoken');
-const { userModel } = require('./db');
+const { adminModel } = require('../db');
 
 require('dotenv').config();
 
-async function userAuth(req, res, next) {
+async function adminAuth(req, res, next) {
     const token = req.headers.token;
     try {
-        const userJWT = jwt.verify(token, process.env.JWT_SECRET);
-        const userMN = userModel.findOne({
-            _id: userJWT._id
+        const adminJWT = jwt.verify(token, process.env.JWT_ADMIN_SECRET);
+        const adminMN = await adminModel.findOne({
+            _id: adminJWT.id
         });
-        req.body.user = userMN;
+        if (adminMN == null) {
+            res.json({
+                msg: 'Invalid Token,  Please login again'
+            });
+            return;
+        }
+        req.body.admin = adminMN;
         next();
     } catch (err) {
         console.log(err);
         if (err.name === 'JsonWebTokenError') {
             res.status(401).json({
-                msg: 'Invalid token, Please Login again'
+                msg: 'Invalid token, Please login again'
             });
         } else if (err.name === 'TokenExpiredError') {
             res.status(401).json({
@@ -31,5 +37,5 @@ async function userAuth(req, res, next) {
 }
 
 module.exports = {
-    userAuth: userAuth
+    adminAuth: adminAuth
 }
