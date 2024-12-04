@@ -163,7 +163,7 @@ adminRouter.put('/course', adminAuth, async function (req, res) {
 
     console.log(req.body.admin._id);
     try {
-        await courseModel.updateOne({
+        const courseUpdation = await courseModel.updateOne({
             _id: req.body.courseId,
             courseAdmin: req.body.admin._id
         }, {
@@ -172,8 +172,15 @@ adminRouter.put('/course', adminAuth, async function (req, res) {
             thumbnailUrl: req.body.thumbnailUrl,
             description: req.body.description,
         });
+        if (courseUpdation == null) {// test this
+            res.status(403).json({
+                msg: 'Course Not Found'
+            });
+            return;
+        }
         res.json({
             msg: 'Course Updated',
+            courseId: courseUpdation._id
         });
     } catch (err) {
         res.status(500).json({
