@@ -172,7 +172,8 @@ adminRouter.put('/course', adminAuth, async function (req, res) {
             thumbnailUrl: req.body.thumbnailUrl,
             description: req.body.description,
         });
-        if (courseUpdation == null) {// test this
+        console.log(courseUpdation);
+        if (courseUpdation.matchedCount == 0) {
             res.status(403).json({
                 msg: 'Course Not Found'
             });

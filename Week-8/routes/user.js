@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const { z } = require('zod');
 require('dotenv').config();
 
-const { userModel, purchaseModel, courseModel } = require('../db');
+const { adminModel, userModel, purchaseModel, courseModel } = require('../db');
 const { userAuth } = require('../middleware/userAuth');
 
 const userRouter = Router();
@@ -99,27 +99,27 @@ userRouter.post('/signin', async function (req, res) {
 userRouter.get('/my-course', userAuth, function (req, res) {
     let myCourse = [];
     try {
-        const purchasedCourseList = purchaseModel.find({
-            _id: user._id
+        const purchasedCourseMN = purchaseModel.find({
+            userId: req.body.user._id
         });
         const coursesMN = courseModel.find({});
         adminModel.find({}).then((adminList) => {
             coursesMN.then((courseList) => {
-                purchasedCourseList.then((purchasedCourses) => {
-                    purchasedCourses.forEach((purchasedCourse) => {
+                purchasedCourseMN.then((purchasedCourseList) => {
+                    purchasedCourseList.forEach((purchasedCourse) => {
                         let row = {};
-                        const course = courseList.find((course) => {
-                            course._id = purchasedCourse.courseId
+                        const ccourse = courseList.find((course) => {
+                            return course._id.toString() === purchasedCourse.courseId.toString();
                         });
                         const courseAdmin = adminList.find((admin) => {
-                            return admin._id == course.courseAdmin
+                            return admin._id.toString() === ccourse.courseAdmin.toString();
                         });
-                        row[id] = course._id;
-                        row[courseName] = course.courseName;
-                        row[price] = course.price;
-                        row[thumbnailUrl] = course.thumbnailUrl;
-                        row[description] = course.description;
-                        row[courseCreator] = courseAdmin.firstName;
+                        row['id'] = ccourse._id;
+                        row['courseName'] = ccourse.courseName;
+                        row['price'] = ccourse.price;
+                        row['thumbnailUrl'] = ccourse.thumbnailUrl;
+                        row['description'] = ccourse.description;
+                        row['courseCreator'] = courseAdmin.firstName;
                         myCourse.push(row);
                     });
                     res.json({
