@@ -96,38 +96,45 @@ userRouter.post('/signin', async function (req, res) {
 });
 
 
-userRouter.get('/my-course', userAuth, function (req, res) {
+userRouter.get('/my-course', userAuth, async function (req, res) {
     let myCourse = [];
     try {
-        const purchasedCourseMN = purchaseModel.find({
+        const purchasedCourseMN = await purchaseModel.find({
             userId: req.body.user._id
         });
-        const coursesMN = courseModel.find({});
-        adminModel.find({}).then((adminList) => {
-            coursesMN.then((courseList) => {
-                purchasedCourseMN.then((purchasedCourseList) => {
-                    purchasedCourseList.forEach((purchasedCourse) => {
-                        let row = {};
-                        const ccourse = courseList.find((course) => {
-                            return course._id.toString() === purchasedCourse.courseId.toString();
-                        });
-                        const courseAdmin = adminList.find((admin) => {
-                            return admin._id.toString() === ccourse.courseAdmin.toString();
-                        });
-                        row['id'] = ccourse._id;
-                        row['courseName'] = ccourse.courseName;
-                        row['price'] = ccourse.price;
-                        row['thumbnailUrl'] = ccourse.thumbnailUrl;
-                        row['description'] = ccourse.description;
-                        row['courseCreator'] = courseAdmin.firstName;
-                        myCourse.push(row);
-                    });
-                    res.json({
-                        msg: 'Your purchased courses',
-                        courseList: myCourse
-                    });
-                });
+        const courseMN = await courseModel.find({
+            _id: {
+                $in: purchasedCourseMN.map((purchasedCourse) => {
+                    return purchasedCourse.courseId;
+                })
+            }
+        });
+        const adminMN = await adminModel.find({
+            _id: {
+                $in: courseMN.map((course) => {
+                    return course.courseAdmin;
+                })
+            }
+        });
+        purchasedCourseMN.forEach((purchasedCourse) => {
+            let row = {};
+            const ccourse = courseMN.find((course) => {
+                return course._id.toString() === purchasedCourse.courseId.toString();
             });
+            const courseAdmin = adminMN.find((admin) => {
+                return admin._id.toString() === ccourse.courseAdmin.toString();
+            });
+            row['id'] = ccourse._id;
+            row['courseName'] = ccourse.courseName;
+            row['price'] = ccourse.price;
+            row['thumbnailUrl'] = ccourse.thumbnailUrl;
+            row['description'] = ccourse.description;
+            row['courseCreator'] = courseAdmin.firstName;
+            myCourse.push(row);
+        });
+        res.json({
+            msg: 'Your purchased courses',
+            courseList: myCourse
         });
     } catch (err) {
         console.log(err);

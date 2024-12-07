@@ -23,12 +23,21 @@ const courseSchema = new Schema({
     price: Number,
     thumbnailUrl: String,
     description: String,
-    courseAdmin: ObjectId
+    courseAdmin: {
+        type: Schema.Types.ObjectId,
+        ref: 'admin'
+    }
 })
 
 const purchaseSchema = new Schema({
-    userId: ObjectId,
-    courseId: ObjectId,
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+    },
+    courseId: {
+        type: Schema.Types.ObjectId,
+        ref: 'courses'
+    },
 })
 
 const userModel = mongoose.model('users', userSchema);

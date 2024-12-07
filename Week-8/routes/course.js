@@ -29,34 +29,34 @@ courseRouter.post('/purchase-course', userAuth, async function (req, res) {
     }
 });
 
-courseRouter.get('/all-course', function (req, res) {
+courseRouter.get('/all-course', async function (req, res) {
     let allCourses = [];
     try {
-        const coursesMN = courseModel.find({});
-        adminModel.find({}).then((adminList) => {
-            coursesMN.then((courseList) => {
-                courseList.forEach((course) => {
-                    let row = {};
-                    const courseAdmin = adminList.find((admin) => {
-                        return admin._id.toString() === course.courseAdmin.toString();
-                    });
-                    // console.log(courseAdmin);
-                    // console.log('----');
-                    // console.log(course);
-                    row['id'] = course._id;
-                    row['courseName'] = course.courseName;
-                    row['price'] = course.price;
-                    row['thumbnailUrl'] = course.thumbnailUrl;
-                    row['description'] = course.description;
-                    row['courseCreator'] = courseAdmin.firstName;
-                    allCourses.push(row);
-                });
-
-                res.json({
-                    msg: 'List of All courses',
-                    courseList: allCourses
-                });
+        const coursesMN = await courseModel.find({});
+        const adminMN = await adminModel.find({
+            _id: {
+                $in: coursesMN.map((course) => {
+                    return course.courseAdmin;
+                })
+            }
+        });
+        coursesMN.forEach((course) => {
+            let row = {};
+            const courseAdmin = adminMN.find((admin) => {
+                return admin._id.toString() === course.courseAdmin.toString();
             });
+            row['id'] = course._id;
+            row['courseName'] = course.courseName;
+            row['price'] = course.price;
+            row['thumbnailUrl'] = course.thumbnailUrl;
+            row['description'] = course.description;
+            row['courseCreator'] = courseAdmin.firstName;
+            allCourses.push(row);
+        });
+
+        res.json({
+            msg: 'List of All courses',
+            courseList: allCourses
         });
     } catch (err) {
         console.log(err);
