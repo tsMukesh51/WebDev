@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useFetch } from './hooks/useFetch'
+import { useDebounce } from './hooks/useDebounce';
 
 function App() {
   const [todoId, setTodoId] = useState(1);
-  const { dataa, loading } = useFetch("https://jsonplaceholder.typicode.com/users/" + todoId);
+  // const { dataa, loading } = useFetch("https://jsonplaceholder.typicode.com/users/" + todoId);
 
-  console.log(dataa, ' printing');
+  const debounced = useDebounce(todoId);
+
+  console.log(' logging');
   return (
     <div>
       <div>
@@ -14,9 +17,9 @@ function App() {
         <button onClick={() => setTodoId(3)}>3</button>
         <button onClick={() => setTodoId(4)}>4</button>
       </div>
-      <p>
-        {loading ? "Loading..." : JSON.stringify(dataa)}
-      </p>
+      <h2>
+        {debounced}
+      </h2>
     </div>
   )
 }
