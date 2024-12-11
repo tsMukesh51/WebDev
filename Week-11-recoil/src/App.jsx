@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { counterAtom } from './store/atoms/count'
+import { counterAtom, isCounterEvenSel } from './store/atoms/count'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,6 +23,7 @@ function Counter() {
       <DisplayCount />
       <IncCounter />
       <DecCounter />
+      <DisIsEven />
     </div>
   )
 }
@@ -39,7 +40,7 @@ function DisplayCount() {
 function IncCounter() {
   const setCount = useSetRecoilState(counterAtom);
   function increase() {
-    setCount((c) => c + 1);
+    setCount((c) => c + 2);
   }
   return (
     <div>
@@ -56,6 +57,17 @@ function DecCounter() {
   return (
     <div>
       <button onClick={decrease}>Decrease</button>
+    </div>
+  )
+}
+
+function DisIsEven() {
+  const isEven = useRecoilValue(isCounterEvenSel);
+  console.log(isEven);
+  console.log('DisIsEven');
+  return (
+    <div>
+      {isEven ? 'Even' : 'Odd'}
     </div>
   )
 }
