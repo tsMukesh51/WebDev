@@ -4,17 +4,20 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 import { Button } from './components/Buttons'
+import { Input } from './components/Inputs'
 
 function App() {
-  const [count, setCount] = useState(true)
+  const [disabled, setDisabled] = useState(false)
 
   function disableIt() {
-    setCount(c => !c);
+    setDisabled(c => !c);
   }
+
   return (
     <>
       <h3>Hi there</h3>
-      <Button disabled={count} fn={disableIt}>Sign Up</Button>
+      <Input type={'text'} placeholder={'Enter email'} />
+      <Button disabled={disabled} fn={disableIt}>Sign Up</Button>
     </>
   )
 }
