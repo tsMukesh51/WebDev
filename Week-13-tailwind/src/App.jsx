@@ -8,7 +8,7 @@ import { Button } from './components/Buttons'
 import { Input } from './components/Inputs'
 
 function App() {
-  const [disabled, setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(true);
 
   function disableIt() {
     setDisabled(c => !c);
@@ -22,7 +22,7 @@ function App() {
           <p className={'text-blue-300'}>Webinar</p>
           <p className={'text-white'}>.gg</p>
         </div>
-        <Input className={'pb-6'} type={'email'} placeholder={'Enter email'} />
+        <Input className={'pb-6'} type={'email'} placeholder={'Enter email'} sumbitDisabled={setDisabled} />
         <Button disabled={disabled} fn={disableIt}>Sign Up</Button></div>
     </>
   )

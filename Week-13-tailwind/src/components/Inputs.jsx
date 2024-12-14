@@ -3,7 +3,8 @@ import { useRef, useState } from "react";
 export const Input = ({
     type,
     placeholder,
-    className
+    className,
+    sumbitDisabled
 }) => {
     const timer = useRef(null);
     const [invalidMsg, setInvalidMsg] = useState(0);
@@ -13,9 +14,11 @@ export const Input = ({
             setInvalidMsg(1);
         } else {
             setInvalidMsg(2);
+            sumbitDisabled(false);
         }
     }
     const debounceFn = (e) => {
+        setInvalidMsg(0);
         if (type === 'email') {
             if (timer.current)
                 clearTimeout(timer.current);
