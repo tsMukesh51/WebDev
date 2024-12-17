@@ -1,11 +1,8 @@
 import { useEffect, useRef, forwardRef, useState } from "react"
 
 export const Otp = ({ setOtpValid, number }) => {
-    const numBoxes = useRef([]);
+    const numBoxes = useRef(Array(number).fill(null));
     const timer = useRef(null);
-    useEffect(() => {
-        numBoxes.current = numBoxes.current.slice(0, number).concat(new Array(number - numBoxes.current.length).fill(null));
-    }, [number]);
     const isOtpValid = () => {
         if (timer.current)
             clearTimeout(timer.current);
