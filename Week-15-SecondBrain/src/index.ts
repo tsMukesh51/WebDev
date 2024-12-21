@@ -1,6 +1,6 @@
 import express from "express";
 import { json } from "express";
-import mongoose, { Error } from "mongoose";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { string, z } from "zod";
 import dotenv from "dotenv"
@@ -27,7 +27,7 @@ app.post("/api/v1/signup", async (req, res) => {
         res.json({
             msg: 'Account created'
         });
-    } catch (err: unknown) {
+    } catch (err: any) {
         if (err.code == '11000') {
             res.status(403).json({
                 msg: 'Email already in use'
@@ -85,11 +85,10 @@ app.post("/api/v1/signin", async (req, res) => {
 });
 
 app.get("/api/v1/content", userAuth, async (req, res) => {
-    const userId = req.body.userId;
     try {
         const contents = await ContentModel.find({
-            userId: userId
-        }).populate('User', 'fullName');
+            userId: req.userId
+        }).populate('authorName', 'fullName -_id');
         res.json({
             msg: 'List of Contents',
             contents: contents
@@ -102,12 +101,50 @@ app.get("/api/v1/content", userAuth, async (req, res) => {
     }
 });
 
-app.post("/api/v1/content", (req, res) => {
-
+app.post("/api/v1/content", userAuth, async (req, res) => {
+    try {
+        const content = await ContentModel.create({
+            type: req.body.type,
+            body: req.body.body,
+            title: req.body.title,
+            userId: req.userId
+        });
+        const data = content.populate('authorName', 'fullName -_id');
+        res.status(200).json({
+            msg: 'Content Created',
+            content: data
+        });
+    } catch (err: any) {
+        console.log(err);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        });
+    }
 });
 
-app.delete("/api/v1/content", (req, res) => {
+app.delete("/api/v1/content", userAuth, async (req, res) => {
+    try {
+        const content = await ContentModel.deleteOne({
+            _id: req.body.contentId,
+            userId: req.userId
+        });
+        console.log(content);
+        if (content.deletedCount >= 1) {
+            res.status(200).json({
+                msg: 'Content Deleted'
+            });
+        } else {
+            res.status(404).json({
+                msg: 'Content not found to delete'
+            })
+        }
+    } catch (err: any) {
+        console.log(err);
 
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        });
+    }
 });
 
 app.post("/api/v1/brain/share", (req, res) => {

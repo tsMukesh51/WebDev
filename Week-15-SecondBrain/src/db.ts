@@ -1,8 +1,5 @@
 import { Schema, Mongoose, ObjectId, model } from "mongoose";
 import { contentType } from "./types/schema";
-import { tuple } from "zod";
-
-
 
 const userDbSchema = new Schema({
     fullName: { type: String, required: true },
@@ -16,6 +13,22 @@ const contentDbSchema = new Schema({
     body: { type: String, required: true },
     title: { type: String },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+}, {
+    toJSON: {
+        transform: (doc, ret) => {
+            delete ret.__v;
+            delete ret._id;
+            delete ret.userId;
+        },
+        virtuals: true
+    },
+    toObject: { virtuals: true }
+});
+contentDbSchema.virtual('authorName', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true
 });
 
 const tagDbSchema = new Schema({
