@@ -5,9 +5,9 @@ import jwt from "jsonwebtoken";
 import { string, z } from "zod";
 import dotenv from "dotenv"
 
-import { userSchema } from "./schema";
-import { userModel } from "./db";
-import { userAuth } from "./middleware/users";
+import { userSchema } from "./types/schema";
+import { ContentModel, userModel } from "./db";
+import { userAuth } from "./middleware/user";
 
 const app = express();
 app.use(json());
@@ -27,8 +27,7 @@ app.post("/api/v1/signup", async (req, res) => {
         res.json({
             msg: 'Account created'
         });
-    } catch (err) {
-        //@ts-ignore
+    } catch (err: unknown) {
         if (err.code == '11000') {
             res.status(403).json({
                 msg: 'Email already in use'
@@ -57,7 +56,7 @@ app.post("/api/v1/signin", async (req, res) => {
         if (currentUser) {
             if (currentUser.password === req.body.password) {
                 if (process.env.JWT_SECRET) {
-                    const jwttoken = jwt.sign({ username: currentUser.username }, process.env.JWT_SECRET);
+                    const jwttoken = jwt.sign({ id: currentUser._id }, process.env.JWT_SECRET);
                     res.json({
                         msg: 'Login Successful',
                         token: `Bearer ${jwttoken}`
@@ -85,10 +84,22 @@ app.post("/api/v1/signin", async (req, res) => {
     }
 });
 
-app.get("/api/v1/content", userAuth, (req, res) => {
-    res.json({
-        msg: 'Welcome to contents'
-    })
+app.get("/api/v1/content", userAuth, async (req, res) => {
+    const userId = req.body.userId;
+    try {
+        const contents = await ContentModel.find({
+            userId: userId
+        }).populate('User', 'fullName');
+        res.json({
+            msg: 'List of Contents',
+            contents: contents
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        });
+    }
 });
 
 app.post("/api/v1/content", (req, res) => {

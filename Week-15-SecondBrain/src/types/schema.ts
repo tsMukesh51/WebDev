@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { string, z } from "zod";
 
 export const contentType = ['image', 'video', 'text', 'audio', 'sm-post'];
@@ -22,3 +23,4 @@ export class CustomError extends Error {
         this.name = name;
     }
 }
+

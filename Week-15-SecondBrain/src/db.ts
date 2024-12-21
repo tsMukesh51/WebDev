@@ -1,5 +1,5 @@
 import { Schema, Mongoose, ObjectId, model } from "mongoose";
-import { contentType } from "./schema";
+import { contentType } from "./types/schema";
 import { tuple } from "zod";
 
 
