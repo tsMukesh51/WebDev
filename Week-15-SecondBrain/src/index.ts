@@ -1,13 +1,13 @@
 import express from "express";
 import { json } from "express";
-import mongoose from "mongoose";
+import { connect, isValidObjectId } from "mongoose";
 import jwt from "jsonwebtoken";
-import { string, z } from "zod";
 import dotenv from "dotenv"
 
-import { userSchema } from "./types/schema";
-import { ContentModel, userModel } from "./db";
+import { contentSchema, userSchema } from "./types/schema";
+import { ContentModel, UserModel } from "./db";
 import { userAuth } from "./middleware/user";
+import { decryptUserId, encryptUserId } from "./Utils/cipher";
 
 const app = express();
 app.use(json());
@@ -23,7 +23,7 @@ app.post("/api/v1/signup", async (req, res) => {
         return;
     }
     try {
-        const createdUser = await userModel.create(req.body);
+        const createdUser = await UserModel.create({ ...req.body, isShared: false });
         res.json({
             msg: 'Account created'
         });
@@ -52,7 +52,7 @@ app.post("/api/v1/signin", async (req, res) => {
         return;
     }
     try {
-        const currentUser = await userModel.findOne({ username: req.body.username });
+        const currentUser = await UserModel.findOne({ username: req.body.username });
         if (currentUser) {
             if (currentUser.password === req.body.password) {
                 if (process.env.JWT_SECRET) {
@@ -102,6 +102,14 @@ app.get("/api/v1/content", userAuth, async (req, res) => {
 });
 
 app.post("/api/v1/content", userAuth, async (req, res) => {
+    const { success, data, error } = contentSchema.safeParse({ ...req.body, userId: req.userId });
+    if (!success) {
+        res.status(400).json({
+            msg: "Invalid format",
+            Error: error.errors
+        });
+        return;
+    }
     try {
         const content = await ContentModel.create({
             type: req.body.type,
@@ -123,12 +131,16 @@ app.post("/api/v1/content", userAuth, async (req, res) => {
 });
 
 app.delete("/api/v1/content", userAuth, async (req, res) => {
+    if (!isValidObjectId(req.body.contentId)) {
+        res.status(400).json({
+            msg: 'Invalid content Id'
+        });
+    }
     try {
         const content = await ContentModel.deleteOne({
             _id: req.body.contentId,
             userId: req.userId
         });
-        console.log(content);
         if (content.deletedCount >= 1) {
             res.status(200).json({
                 msg: 'Content Deleted'
@@ -140,19 +152,80 @@ app.delete("/api/v1/content", userAuth, async (req, res) => {
         }
     } catch (err: any) {
         console.log(err);
-
         res.status(500).json({
             msg: 'Internal Server Error'
         });
     }
 });
 
-app.post("/api/v1/brain/share", (req, res) => {
-
+app.post("/api/v1/brain/share", userAuth, async (req, res) => {
+    if (typeof req.body.isShared == 'undefined' || req.body.isShared == null) {
+        res.status(400).json({
+            msg: 'Sharing status not specified'
+        });
+        return;
+    }
+    if (!req.userId) {
+        res.status(500).json({
+            msg: 'Internal Server Error, user not found'
+        })
+        return;
+    }
+    try {
+        const updateShared = await UserModel.updateOne({ _id: req.userId }, {
+            isShared: req.body.isShared
+        });
+        if (req.body.isShared) {
+            const sharedLink = encryptUserId(req.userId);
+            res.status(200).json({
+                msg: 'Share link created successfully',
+                sharedLink: sharedLink
+            });
+            return;
+        } else {
+            res.status(200).json({
+                msg: 'Share link disabled'
+            })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        })
+    }
 });
 
-app.get("/api/v1/brain/:shareLink", (req, res) => {
-
+app.get("/api/v1/brain/:shareLink", async (req, res) => {
+    const userId = decryptUserId(req.params.shareLink);
+    if (userId === 'undefined' || userId === null) {
+        res.status(400).json({
+            msg: 'User not found'
+        });
+        return;
+    }
+    try {
+        const user = await UserModel.findOne({
+            _id: userId
+        });
+        if (user?.isShared == false) {
+            res.status(401).json({
+                msg: 'User brain is private'
+            });
+            return;
+        }
+        const contents = await ContentModel.find({
+            userId: userId,
+        });
+        res.json({
+            msg: 'List of Contents',
+            contents: contents
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        });
+    }
 });
 
 const main = async (): Promise<any> => {
@@ -160,7 +233,7 @@ const main = async (): Promise<any> => {
         console.log('Mongo Url not found');
         return;
     }
-    mongoose.connect(process.env.MONGO_URL);
+    connect(process.env.MONGO_URL);
     app.listen(3000);
     console.log('Server Started');
 }

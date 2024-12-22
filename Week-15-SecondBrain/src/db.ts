@@ -1,4 +1,4 @@
-import { Schema, Mongoose, ObjectId, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { contentType } from "./types/schema";
 
 const userDbSchema = new Schema({
@@ -6,12 +6,14 @@ const userDbSchema = new Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    isShared: { type: Boolean, default: false, required: true }
 });
 
 const contentDbSchema = new Schema({
-    type: { type: String, enum: contentType, required: true },
+    contentFormat: { type: String, enum: contentType, required: true },
     body: { type: String, required: true },
     title: { type: String },
+    createdAt: { type: Date, required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, {
     toJSON: {
@@ -41,7 +43,7 @@ const contentTagLinkDbSchema = new Schema({
     contentId: { type: Schema.Types.ObjectId, ref: 'content', required: true }
 });
 
-export const userModel = model('User', userDbSchema);
+export const UserModel = model('User', userDbSchema);
 export const ContentModel = model('Content', contentDbSchema);
 export const TagModel = model('Tag', tagDbSchema);
 export const ContentTagLinkModel = model('ContentTagLink', contentTagLinkDbSchema);
