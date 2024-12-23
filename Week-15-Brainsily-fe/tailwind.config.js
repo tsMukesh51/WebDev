@@ -11,6 +11,9 @@ export default {
           850: "#7971FF",
           450: "#4E48B1",
           250: "#DCE5FF"
+        },
+        slate: {
+          50: "#F9FAFC"
         }
       }
     },

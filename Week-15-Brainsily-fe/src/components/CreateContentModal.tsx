@@ -1,22 +1,36 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { CloseIcon } from "../assets/CloseIcon";
+import { TextInput } from "./TextInput";
+import { Button } from "./Button";
 
-export function CreateContentModel({ modalOpen }: { modalOpen: React.RefObject<boolean> }) {
-    const dialog = useRef<HTMLDialogElement | null>(null);
-    const [reRender, setReRender] = useState(true);
+interface CreateContentModalProps {
+    isModal: boolean,
+    setIsModal: Dispatch<SetStateAction<boolean>>
+}
+
+export function CreateContentModel({ isModal, setIsModal }: CreateContentModalProps) {
+    const dialog = useRef<HTMLDialogElement>(null);
     useEffect(() => {
-        console.log('effect');
-        if (dialog.current) {
-            if (modalOpen.current == true) {
-                console.log('show');
+        if (dialog.current != null) {
+            if (isModal == true) {
                 dialog.current.showModal();
-            } else {
+            } else if (isModal == false) {
                 dialog.current.close();
             }
-        } else {
-            setReRender(reRender => !reRender);
         }
-    }, [modalOpen.current]);
-    return <dialog ref={dialog}>
-        <p>Namaste</p>
+    }, [isModal]);
+    return <dialog ref={dialog} className=" rounded-lg">
+        <div className="p-3 w-full">
+            <div className="text-right">
+                <button onClick={() => setIsModal(isModal => isModal = false)}>
+                    <CloseIcon />
+                </button>
+            </div>
+            <div className="flex flex-col gap-4 items-center">
+                <TextInput placeholder="Title" />
+                <TextInput placeholder="things..." />
+                <Button text="Submit" variant="secondary" size="lg"></Button>
+            </div>
+        </div>
     </dialog>;
 }

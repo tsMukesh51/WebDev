@@ -17,7 +17,7 @@ const variantStyles = {
     "secondary": "bg-purple-850 text-white"
 }
 
-const defaultStyles = "px-4 py-3 rounded-md font-light flex items-center"
+const defaultStyles = "px-4 py-3 rounded-md font-light flex items-center w-fit"
 
 export function Button({ variant, text, size, startIcon, endIcon, OnClick }: ButtonProps) {
 
