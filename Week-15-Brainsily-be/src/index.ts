@@ -1,5 +1,7 @@
 import express from "express";
 import { json } from "express";
+import { CorsOptions } from "cors";
+import cors from "cors";
 import { connect, isValidObjectId } from "mongoose";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
@@ -11,10 +13,11 @@ import { decryptUserId, encryptUserId } from "./Utils/cipher";
 
 const app = express();
 app.use(json());
+app.use(cors());
 dotenv.config();
 
 app.post("/api/v1/signup", async (req, res) => {
-    const { success, data, error } = userSchema.safeParse(req.body);
+    const { success, data, error } = userSchema.omit({ isShared: true }).safeParse(req.body);
     if (!success) {
         res.status(411).json({
             msg: 'Invalid Format',

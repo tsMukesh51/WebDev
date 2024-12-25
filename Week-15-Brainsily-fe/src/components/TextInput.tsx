@@ -1,10 +1,11 @@
 interface TextInputProps {
     placeholder: string,
-    allowedValues?: string[]
+    allowedValues?: string[],
+    reference?: any;
 }
 
-export function TextInput({ placeholder, allowedValues }: TextInputProps) {
+export function TextInput({ placeholder, allowedValues, reference }: TextInputProps) {
     return <div>
-        <input type="text" placeholder={placeholder} className="p-1 rounded-md border-[1px]" />
+        <input ref={reference} type="text" placeholder={placeholder} className="p-1 rounded-md border-[1px]" />
     </div>
 }

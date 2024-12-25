@@ -9,6 +9,7 @@ interface ButtonProps {
     size: 'sm' | 'md' | 'lg' | 'xl';
     startIcon?: ReactElement;
     endIcon?: ReactElement;
+    loading?: boolean;
     OnClick?: Function
 }
 
@@ -17,11 +18,18 @@ const variantStyles = {
     "secondary": "bg-purple-850 text-white"
 }
 
+const sizeStyles = {
+    "sm": "p-2",
+    "md": "p-4",
+    "lg": "p-6",
+    "xl": "p-8",
+}
+
 const defaultStyles = "px-4 py-3 rounded-md font-light flex items-center w-fit"
 
-export function Button({ variant, text, size, startIcon, endIcon, OnClick }: ButtonProps) {
+export function Button({ variant, text, size, startIcon, endIcon, loading, OnClick }: ButtonProps) {
 
-    return <button className={`${defaultStyles} ${variantStyles[variant]}`} onClick={() => {
+    return <button className={`${defaultStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${loading ? 'opacity-40' : null}`} onClick={() => {
         if (OnClick)
             OnClick();
     }}>
