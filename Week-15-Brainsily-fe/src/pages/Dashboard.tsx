@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '../components/Button'
 import { ShareIcon } from '../assets/ShareIcon'
 import { PlusIcon } from '../assets/PlusIcon'
 import { Card } from '../components/Card'
 import { CreateContentModel } from '../components/CreateContentModal'
 import { SideBar } from '../components/SideBar'
+import { useContent } from '../hooks/useContent'
 
 function Dashboard() {
   const [isModal, setIsModal] = useState(false);
+  const { contents } = useContent();
 
   return <div className={'grid grid-cols-12'}>
     <div className={'p-5 col-span-2 border-r-2 border-slate-300 h-screen'}>
@@ -23,9 +25,10 @@ function Dashboard() {
         </div>
       </div>
       <div className='grid grid-flow-col'>
-        <Card text='Namaste' />
-        <Card text='Namaste' />
-        <Card text='Namaste' />
+        {contents.map((content) =>
+          //@ts-ignore
+          <Card text={content.title} />
+        )}
       </div>
     </div>
   </div>

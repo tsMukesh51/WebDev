@@ -19,10 +19,11 @@ export function CreateContentModel({ isModal, setIsModal }: CreateContentModalPr
             }
         }
     }, [isModal]);
+    // solve bug for esc button
     return <dialog ref={dialog} className=" rounded-lg">
         <div className="p-3 w-full">
             <div className="text-right">
-                <button onClick={() => setIsModal(isModal => isModal = false)}>
+                <button onClick={() => setIsModal(() => { return false; })}>
                     <CloseIcon />
                 </button>
             </div>

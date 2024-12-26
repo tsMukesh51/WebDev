@@ -92,7 +92,7 @@ app.get("/api/v1/content", userAuth, async (req, res) => {
         const contents = await ContentModel.find({
             userId: req.userId
         }).populate('authorName', 'fullName -_id');
-        res.json({
+        res.status(200).json({
             msg: 'List of Contents',
             contents: contents
         });
