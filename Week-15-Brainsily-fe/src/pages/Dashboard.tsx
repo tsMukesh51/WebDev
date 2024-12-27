@@ -7,7 +7,7 @@ import { CreateContentModel } from '../components/CreateContentModal'
 import { SideBar } from '../components/SideBar'
 import { useContent } from '../hooks/useContent'
 
-function Dashboard() {
+export function Dashboard() {
   const [isModal, setIsModal] = useState(false);
   const { contents } = useContent();
 
@@ -20,7 +20,7 @@ function Dashboard() {
         <h3 className='font-semibold text-3xl'>All Notes</h3>
         <div className="flex gap-6">
           <Button variant='primary' text='Share Brain' size='lg' startIcon={<ShareIcon />}></Button>
-          <Button variant='secondary' text='Add Content' size='lg' startIcon={<PlusIcon />} OnClick={() => { setIsModal(isModal => isModal = true) }}></Button>
+          <Button variant='secondary' text='Add Content' size='lg' startIcon={<PlusIcon />} OnClick={() => { setIsModal(true) }}></Button>
           <CreateContentModel isModal={isModal} setIsModal={setIsModal} />
         </div>
       </div>
@@ -33,5 +33,3 @@ function Dashboard() {
     </div>
   </div>
 }
-
-export default Dashboard

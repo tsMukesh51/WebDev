@@ -17,7 +17,7 @@ export function Signin() {
             password
         });
         if (response.status == 200) {
-            alert('Login successfull');
+            localStorage.removeItem('token');
             localStorage.setItem('token', response.data.token);
             navigate('/dashboard');
         } else {

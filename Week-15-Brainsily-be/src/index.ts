@@ -59,7 +59,7 @@ app.post("/api/v1/signin", async (req, res) => {
         if (currentUser) {
             if (currentUser.password === req.body.password) {
                 if (process.env.JWT_SECRET) {
-                    const jwttoken = jwt.sign({ id: currentUser._id }, process.env.JWT_SECRET);
+                    const jwttoken = jwt.sign({ id: currentUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
                     res.json({
                         msg: 'Login Successful',
                         token: `Bearer ${jwttoken}`

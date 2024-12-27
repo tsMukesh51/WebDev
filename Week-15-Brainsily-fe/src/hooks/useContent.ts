@@ -12,13 +12,13 @@ export function useContent() {
             }
         })
             .then((response) => {
-                console.log(response);
-                console.log("then");
+                // console.log(response);
+                // console.log("then");
                 setContents(response.data.contents);
             })
             .catch((response) => {
-                console.log(response);
-                console.log("catch");
+                // console.log(response);
+                // console.log("catch");
                 setContents(response.data.contents);
             });
     }
