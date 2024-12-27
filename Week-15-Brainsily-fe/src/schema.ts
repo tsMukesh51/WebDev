@@ -1,7 +1,7 @@
 import { boolean, date, string, z } from "zod";
 import { Types } from "mongoose";
 
-export const contentType = ['image', 'video', 'text', 'audio', 'tweet', 'ytvideo', 'link'] as const;
+export const contentType = ['text', 'tweet', 'ytvid', 'link'] as const;
 
 export const userSchema = z.object({
     fullName: string().min(3).max(25)
