@@ -6,10 +6,12 @@ import { Card } from '../components/Card'
 import { CreateContentModel } from '../components/CreateContentModal'
 import { SideBar } from '../components/SideBar'
 import { useContent } from '../hooks/useContent'
+import { useScript } from '../hooks/useScript'
 
 export function Dashboard() {
   const [isModal, setIsModal] = useState(false);
-  const { contents } = useContent();
+  const { contents, refresh } = useContent();
+  useScript({ url: "https://platform.twitter.com/widgets.js" });
 
   return <div className={'grid grid-cols-12'}>
     <div className={'p-5 col-span-2 border-r-2 border-slate-300 h-screen'}>
@@ -24,12 +26,12 @@ export function Dashboard() {
           <CreateContentModel isModal={isModal} setIsModal={setIsModal} />
         </div>
       </div>
-      <div className='grid grid-flow-col'>
+      <div className='grid auto-fit-[320px] gap-4'>
         {contents.map((content) =>
-          //@ts-ignore
-          <Card text={content.title} />
+          <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} />
         )}
       </div>
     </div>
   </div>
+
 }

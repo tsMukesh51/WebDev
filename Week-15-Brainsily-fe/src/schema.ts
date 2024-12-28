@@ -15,11 +15,14 @@ export const userSchema = z.object({
 });
 
 export const contentSchema = z.object({
+    id: z.custom<Types.ObjectId>(),
     contentFormat: z.enum(contentType),
     body: string().min(1).max(350),
     title: string().max(50),
     createdAt: date(),
-    userId: z.custom<Types.ObjectId>()
+    authorName: z.object({
+        fullName: userSchema.pick({ fullName: true }) // Nested object for `authorName`
+    }).optional()
 });
 
 export class CustomError extends Error {
