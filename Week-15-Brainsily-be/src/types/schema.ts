@@ -18,7 +18,7 @@ export const contentSchema = z.object({
     contentFormat: z.enum(contentType),
     body: string().min(1).max(350),
     title: string().max(50),
-    createdAt: date(),
+    createdAt: date().optional(),
     userId: z.custom<Types.ObjectId>()
 });
 

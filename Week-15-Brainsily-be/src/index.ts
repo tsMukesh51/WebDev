@@ -115,12 +115,15 @@ app.post("/api/v1/content", userAuth, async (req, res) => {
     }
     try {
         const content = await ContentModel.create({
-            type: req.body.type,
+            contentFormat: req.body.contentFormat,
             body: req.body.body,
             title: req.body.title,
+            createdAt: new Date(),
             userId: req.userId
         });
+        console.log(content);
         const data = content.populate('authorName', 'fullName -_id');
+        console.log(data);
         res.status(200).json({
             msg: 'Content Created',
             content: data
@@ -133,15 +136,15 @@ app.post("/api/v1/content", userAuth, async (req, res) => {
     }
 });
 
-app.delete("/api/v1/content", userAuth, async (req, res) => {
-    if (!isValidObjectId(req.body.contentId)) {
+app.delete("/api/v1/content/:contentId", userAuth, async (req, res) => {
+    if (!isValidObjectId(req.params.contentId)) {
         res.status(400).json({
             msg: 'Invalid content Id'
         });
     }
     try {
         const content = await ContentModel.deleteOne({
-            _id: req.body.contentId,
+            _id: req.params.contentId,
             userId: req.userId
         });
         if (content.deletedCount >= 1) {

@@ -10,7 +10,7 @@ import { useScript } from '../hooks/useScript'
 
 export function Dashboard() {
   const [isModal, setIsModal] = useState(false);
-  const { contents, refresh } = useContent();
+  const { contents, refresh, deleteContent, createContent } = useContent();
   useScript({ url: "https://platform.twitter.com/widgets.js" });
 
   return <div className={'grid grid-cols-12'}>
@@ -23,12 +23,12 @@ export function Dashboard() {
         <div className="flex gap-6">
           <Button variant='primary' text='Share Brain' size='lg' startIcon={<ShareIcon />}></Button>
           <Button variant='secondary' text='Add Content' size='lg' startIcon={<PlusIcon />} OnClick={() => { setIsModal(true) }}></Button>
-          <CreateContentModel isModal={isModal} setIsModal={setIsModal} />
+          <CreateContentModel isModal={isModal} setIsModal={setIsModal} createContent={createContent} />
         </div>
       </div>
       <div className='grid auto-fit-[320px] gap-4'>
         {contents.map((content) =>
-          <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} />
+          <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />
         )}
       </div>
     </div>
