@@ -46,27 +46,33 @@ This project was built to:
 ## Getting Started
 
 ### Prerequisites
-- Node.js and npm installed on your system.
-- MongoDB database URL.
-- A `.env` file containing:
+Before you begin, ensure you have the following installed and set up:
+- **Node.js** and **npm** installed on your system. ([Download Node.js](https://nodejs.org/))
+- **MongoDB** database accessible via a connection URL.
+- A `.env` file in the project root containing the following environment variables:
   ```env
-    MONGO_URL=mongodb+srv://<your-connection-string>
-    JWT_USER_SECRET=<your-user-secret>
-    JWT_ADMIN_SECRET=<your-admin-secret>
+  MONGO_URL=mongodb+srv://<your-connection-string>
+  JWT_USER_SECRET=<your-user-secret>
+  JWT_ADMIN_SECRET=<your-admin-secret>
+  ```
+
 ### Installation
+Follow these steps to set up and run the project locally:
 
-Clone the repository:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/course-selling-backend.git
+   cd course-selling-backend
+   ```
 
-    git clone https://github.com/your-username/course-selling-backend.git
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-    cd course-selling-backend
+3. **Start the server:**
+   ```bash
+   npm start
+   ```
 
-Install dependencies:
-
-    npm install
-
-Start the server:
-
-    npm start
-
-The server will run on http://localhost:3000.
+The server will be running at [http://localhost:3000](http://localhost:3000).
