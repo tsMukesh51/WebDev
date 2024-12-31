@@ -1,12 +1,21 @@
 interface TextInputProps {
     placeholder: string,
-    valueType?: any,
     reference?: any,
-    name?: string
+    name?: string,
+    errors?: string[]
 }
 
-export function TextInput({ placeholder, valueType, reference, name }: TextInputProps) {
+export function TextInput({ placeholder, reference, name, errors }: TextInputProps) {
     return <div>
         <input ref={reference} name={name} type="text" placeholder={placeholder} className="p-1 rounded-md border-[1px]" />
+        {errors && (
+            <ul>
+                {errors.map((error, index) => (
+                    <li key={index} className="text-red-500 text-sm">
+                        {error}
+                    </li>
+                ))}
+            </ul>
+        )}
     </div>
 }
