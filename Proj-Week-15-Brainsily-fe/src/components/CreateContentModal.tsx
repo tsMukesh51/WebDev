@@ -6,7 +6,8 @@ import { TextInput } from "./TextInput";
 import { Button } from "./Button";
 import { createContentType } from "../hooks/useContent";
 import { RadioInput } from "./RadioInput";
-import { contentSchema, contentType } from "../schema";
+import { contentType } from "../schema";
+import { TweetEmbed, YouTubeEmbed } from "./SMPostEmbed";
 
 interface CreateContentModalProps {
     isModal: boolean,
@@ -21,22 +22,32 @@ export function CreateContentModel({ isModal, setIsModal, createContent }: Creat
         body: useRef<HTMLInputElement>(null),
         contentFormat: useRef<z.infer<typeof createContentType.shape.contentFormat>>("text"),
         title: useRef<HTMLInputElement>(null),
-    }
+    };
+    const [preview, setPreview] = useState("text");
+    const [bodyUrl, setBodyUrl] = useState("");
 
     function submitModal({ content, setIsModal }: { content: z.infer<typeof createContentType>, setIsModal: Dispatch<SetStateAction<boolean>> }) {
-        const { success, data, error } = createContentType.safeParse(content);
+        const { success, error } = createContentType.safeParse(content);
         if (!success) {
-            console.log(content);
-            console.log(error);
             const errors: Record<string, string[]> = {};
             error.issues.forEach((err) => {
                 err.path.forEach((path) => {
+                    console.log(path.toString());
+                    if (!errors[path.toString()])
+                        errors[path.toString()] = []
                     errors[path.toString()].push(err.message);
                 });
             })
             setValidErrors(errors);
             return;
         } else {
+            if (content.contentFormat == 'ytvid') {
+                content.body = content.body
+                    .replace('youtu.be', 'youtube.com')
+                    .replace('youtube.com', 'youtube-nocookie.com')
+                    .replace("watch", "embed")
+                    .replace("?v=", "/")
+            }
             createContent(content, setIsModal);
         }
     }
@@ -50,6 +61,10 @@ export function CreateContentModel({ isModal, setIsModal, createContent }: Creat
             }
         }
     }, [isModal]);
+
+    useEffect(() => {
+
+    }, [contentRef.body.current?.value])
     // solve bug for esc button
     return <dialog ref={dialog} className="rounded-lg">
         <div className="p-3 w-full">
@@ -60,13 +75,15 @@ export function CreateContentModel({ isModal, setIsModal, createContent }: Creat
             </div>
             <div className="flex flex-col gap-4 items-center">
                 <TextInput reference={contentRef.title} placeholder="Title" errors={validErrors['title']} />
-                <TextInput reference={contentRef.body} placeholder="Content or Link" errors={validErrors['body']} />
-                <RadioInput valRef={contentRef.contentFormat} name="contentFormat" valueList={contentType} />
+                <TextInput reference={contentRef.body} placeholder="Content or Link" errors={validErrors['body']} OnChangeState={setBodyUrl} />
+                <RadioInput valRef={contentRef.contentFormat} name="contentFormat" valueList={contentType} OnChangeState={setPreview} />
+                {preview === 'tweet' && <div className="w-full h-[304px]"><TweetEmbed url={bodyUrl} /></div>}
+                {preview === 'ytvid' && <div className="w-full h-[304px]"><YouTubeEmbed url={bodyUrl} /></div>}
                 <Button text="Submit" variant="secondary" size="lg" OnClick={() => {
                     const content = {
                         contentFormat: contentRef.contentFormat.current,
-                        body: contentRef.body.current.value || '',
-                        title: contentRef.title.current.value || ''
+                        body: contentRef.body.current?.value || '',
+                        title: contentRef.title.current?.value || ''
                     }
                     submitModal({ content, setIsModal })
                 }}></Button>

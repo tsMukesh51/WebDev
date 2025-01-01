@@ -9,6 +9,7 @@ import { TextIcon } from "../assets/TextIcon";
 import { TwitterIcon } from "../assets/TwitterIcon";
 import { YouTubeIcon } from "../assets/YouTubeIcon";
 import { LinkIcon } from "../assets/LinkIcon";
+import { TweetEmbed, YouTubeEmbed } from "./SMPostEmbed";
 
 type CardProps = z.infer<typeof contentSchema> & {
     deleteContent: (contentId: Types.ObjectId) => void;
@@ -37,21 +38,8 @@ export function Card({ id, contentFormat, body, title, createdAt, deleteContent 
         </div>
         <div className="overflow-y-scroll h-full">
             {contentFormat === 'text' && <p>{body}</p>}
-            {contentFormat === 'tweet' &&
-                <blockquote className="twitter-tweet" data-dnt="true">
-                    <a href={body.replace("x.com", "twitter.com")} target='_blank'></a>
-                </blockquote>}
-            {contentFormat === 'ytvid' && <iframe
-                className="w-full h-[304px]"
-                src={body
-                    .replace('youtube', 'youtube-nocookie')
-                    .replace("watch", "embed")
-                    .replace("?v=", "/")
-                    .concat('?controls=0')}
-                title="YouTube video player"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-            ></iframe>}
+            {contentFormat === 'tweet' && URL.canParse(body) && <TweetEmbed url={body} />}
+            {contentFormat === 'ytvid' && URL.canParse(body) && <YouTubeEmbed url={body} />}
         </div>
         <div className="flex gap-2">
             <p className="bg-purple-250 text-purple-450 rounded-full w-min py-1 px-3 text-sm">#productivity</p>
