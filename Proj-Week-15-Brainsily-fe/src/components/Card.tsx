@@ -36,7 +36,7 @@ export function Card({ id, contentFormat, body, title, createdAt, deleteContent 
                 <button onClick={() => { deleteContent(id) }}><Dustbin /></button>
             </div>
         </div>
-        <div className="overflow-y-scroll h-full">
+        <div className="overflow-y-auto h-full">
             {contentFormat === 'text' && <p>{body}</p>}
             {contentFormat === 'tweet' && URL.canParse(body) && <TweetEmbed url={body} />}
             {contentFormat === 'ytvid' && URL.canParse(body) && <YouTubeEmbed url={body} />}

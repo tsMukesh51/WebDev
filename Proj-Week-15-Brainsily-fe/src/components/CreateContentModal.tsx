@@ -77,7 +77,7 @@ export function CreateContentModel({ isModal, setIsModal, createContent }: Creat
                 <TextInput reference={contentRef.title} placeholder="Title" errors={validErrors['title']} />
                 <TextInput reference={contentRef.body} placeholder="Content or Link" errors={validErrors['body']} OnChangeState={setBodyUrl} />
                 <RadioInput valRef={contentRef.contentFormat} name="contentFormat" valueList={contentType} OnChangeState={setPreview} />
-                {preview === 'tweet' && <div className="w-full h-[304px]"><TweetEmbed url={bodyUrl} /></div>}
+                {preview === 'tweet' && <div className="w-full h-[304px] overflow-y-auto"><TweetEmbed url={bodyUrl} /></div>}
                 {preview === 'ytvid' && <div className="w-full h-[304px]"><YouTubeEmbed url={bodyUrl} /></div>}
                 <Button text="Submit" variant="secondary" size="lg" OnClick={() => {
                     const content = {

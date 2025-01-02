@@ -6,6 +6,7 @@
 - [x] Parse and store only video or tweet id. Then parse the same below for them to check in CreateContentModal
 - [ ] Integrate Markdown support for content body.
 - [ ] Allow users to filter contents by `contentFormat`.
+- [ ] Get tweet json data from backend and forward to frontend
 
 ## Refactoring Tasks
 - [ ] Optimize `useContent` to include error handling.
@@ -13,6 +14,7 @@
 ## Bugs to Fix
 - [x] Fix width/height issues in `contentFormatIcons`.
 - [ ] Handle shortcuts and outside clicks in CreateContentModal
+- [ ] New tweet won't load at CreateContentModal and dashboard, get from API
 
 ## Long-term Ideas
 - [ ] Integrate AI for summarizing content.

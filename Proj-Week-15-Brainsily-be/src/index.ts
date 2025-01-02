@@ -234,6 +234,22 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
     }
 });
 
+// app.get("/api/v1/tweet/:user/:tweetId", async (req, res) => {
+//     if (req.params.user == null || req.params.user == "") {
+//         res.status(411).json({
+//             msg: 'user missing is url'
+//         });
+//         return;
+//     }
+//     if (req.params.tweetId == null || req.params.tweetId == "") {
+//         res.status(411).json({
+//             msg: 'tweetId missing is url'
+//         });
+//         return;
+//     }
+
+// })
+
 const main = async (): Promise<any> => {
     if (!process.env.MONGO_URL) {
         console.log('Mongo Url not found');

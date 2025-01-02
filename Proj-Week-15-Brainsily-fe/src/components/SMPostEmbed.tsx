@@ -1,18 +1,22 @@
+import { Tweet } from "react-tweet"
+
 export function TweetEmbed({ url }: { url: string | undefined }) {
     if (url === null || url === undefined)
         return <></>
-    else if (!URL.canParse(url))
+    if (!URL.canParse(url))
         return <p>Incorrect URL</p>
+    const id = url.split('/').pop();
+    if (id != undefined)
+        return <Tweet id={id} />
     else
-        return <blockquote className="twitter-tweet" data-dnt="true">
-            <a href={url.replace("x.com", "twitter.com")} target="_blank"></a>
-        </blockquote>
+        return <></>
+
 }
 
 export function YouTubeEmbed({ url }: { url: string | undefined }) {
     if (url === null || url === undefined)
         return <></>
-    else if (!URL.canParse(url))
+    if (!URL.canParse(url))
         return <p>Incorrect URL</p>
     else
         return <iframe
