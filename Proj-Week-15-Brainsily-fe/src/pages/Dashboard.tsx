@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../components/Button'
 import { ShareIcon } from '../assets/ShareIcon'
 import { PlusIcon } from '../assets/PlusIcon'
@@ -10,12 +10,13 @@ import { useScript } from '../hooks/useScript'
 
 export function Dashboard() {
   const [isModal, setIsModal] = useState(false);
-  const { contents, refresh, deleteContent, createContent } = useContent();
+  const { contents, deleteContent, createContent } = useContent();
   useScript({ url: "https://platform.twitter.com/widgets.js" });
+  const [filter, setFilter] = useState('all');
 
   return <div className={'grid grid-cols-12'}>
     <div className={'p-5 col-span-2 border-r-2 border-slate-300 h-screen'}>
-      <SideBar />
+      <SideBar setFilter={setFilter} />
     </div>
     <div className={'p-8 bg-slate-50 col-span-10'}>
       <div className='flex justify-between items-center w-full mb-8'>
@@ -27,9 +28,13 @@ export function Dashboard() {
         </div>
       </div>
       <div className='grid auto-fit-[320px] gap-4'>
-        {contents.map((content) =>
-          <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />
-        )}
+        {contents.map((content) => {
+          if (filter == 'all')
+            return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />
+          if (filter == content.contentFormat)
+            return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />
+          return <></>
+        })}
       </div>
     </div>
   </div>

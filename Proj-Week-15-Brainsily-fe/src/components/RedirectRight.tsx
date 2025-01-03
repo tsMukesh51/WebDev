@@ -1,8 +1,7 @@
-import { JSXElementConstructor, ReactElement } from "react";
+import { ReactElement } from "react";
 import { Signin } from "../pages/Signin";
 import { Signup } from "../pages/Signup";
 import { Dashboard } from "../pages/Dashboard";
-import { Navigate } from "react-router-dom";
 
 const authenticatedRoutes = [Dashboard];
 const unauthenticatedRoutes = [Signin, Signup]

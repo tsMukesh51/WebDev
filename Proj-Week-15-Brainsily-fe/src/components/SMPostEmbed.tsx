@@ -7,7 +7,7 @@ export function TweetEmbed({ url }: { url: string | undefined }) {
         return <p>Incorrect URL</p>
     const id = url.split('/').pop();
     if (id != undefined)
-        return <Tweet id={id} />
+        return <div className="light"><Tweet id={id} /></div>
     else
         return <></>
 

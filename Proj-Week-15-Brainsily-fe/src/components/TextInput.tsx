@@ -10,7 +10,7 @@ interface TextInputProps {
 
 export function TextInput({ placeholder, reference, name, errors, OnChangeState }: TextInputProps) {
     return <div>
-        <input ref={reference} name={name} type="text" placeholder={placeholder} className="p-1 rounded-md border-[1px]" onChange={(e) => {
+        <input ref={reference} name={name} type={placeholder == "Password" ? "password" : "text"} placeholder={placeholder} className="p-1 rounded-md border-[1px]" onChange={(e) => {
             if (OnChangeState)
                 OnChangeState(e.target.value)
         }
