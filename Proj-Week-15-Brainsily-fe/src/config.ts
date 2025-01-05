@@ -1,1 +1,1 @@
-export const BACKEND_URL = 'http://127.0.0.1:3000'
+export const BACKEND_URL = 'https://bug-free-train-pqqg6v6vqx626g54-3000.app.github.dev'

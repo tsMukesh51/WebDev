@@ -5,9 +5,8 @@
 - [x] Complete CreateContentModal
 - [x] Parse and store only video or tweet id. Then parse the same below for them to check in CreateContentModal
 - [x] Allow users to filter contents by `contentFormat`.
-
-## Refactoring Tasks
-- [ ] Optimize `useContent` to include error handling.
+- [x] Add unauthenticated home page
+- [ ] Add Github Repo Link
 
 ## Bugs to Fix
 - [x] Fix width/height issues in `contentFormatIcons`.
@@ -18,3 +17,6 @@
 - [ ] Integrate Markdown support for content body.
 <!-- - [ ] Integrate AI for summarizing content. -->
 - [ ] Add tags/categories for better content organization.
+
+## Refactoring Tasks
+- [x] Update `Signin` & `Signup` to include error handling.

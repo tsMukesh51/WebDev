@@ -19,7 +19,7 @@ dotenv.config();
 app.post("/api/v1/signup", async (req, res) => {
     const { success, data, error } = userSchema.omit({ isShared: true }).safeParse(req.body);
     if (!success) {
-        res.status(411).json({
+        res.status(400).json({
             msg: 'Invalid Format',
             err: error.errors
         })
@@ -32,12 +32,12 @@ app.post("/api/v1/signup", async (req, res) => {
         });
     } catch (err: any) {
         if (err.code == '11000') {
-            res.status(403).json({
-                msg: 'Email already in use'
+            res.status(409).json({
+                msg: 'Account already exists'
             });
         }
-        res.status(403).json({
-            msg: 'Account already exists'
+        res.status(500).json({
+            msg: 'Internal Server Error'
         });
     }
 });
@@ -48,9 +48,9 @@ app.post("/api/v1/signin", async (req, res) => {
         password: true,
     }).safeParse(req.body);
     if (!success) {
-        res.status(411).json({
+        res.status(400).json({
             msg: 'Invalid Format',
-            err: error.errors
+            err: error.issues
         })
         return;
     }
@@ -70,12 +70,12 @@ app.post("/api/v1/signin", async (req, res) => {
                     })
                 }
             } else {
-                res.status(403).json({
+                res.status(401).json({
                     msg: 'Wrong Credentials'
                 });
             }
         } else {
-            res.status(403).json({
+            res.status(404).json({
                 msg: 'Account does not exists'
             });
         }

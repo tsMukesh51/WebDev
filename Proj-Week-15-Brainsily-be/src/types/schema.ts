@@ -5,7 +5,7 @@ export const contentType = ['text', 'tweet', 'ytvid', 'link'] as const;
 
 export const userSchema = z.object({
     fullName: string().min(3).max(25)
-        .refine((val) => /[^a-zA-Z]+/.test(val), { message: 'Name should contain only alphabets, and Full name' }),
+        .refine((val) => /^[a-zA-Z]+$/.test(val), { message: 'Name should contain only alphabets' }),
     username: string().min(3).max(20, { message: 'Username should contain only alphabets' }),
     email: string().email().max(50),
     password: string().min(6).max(24)

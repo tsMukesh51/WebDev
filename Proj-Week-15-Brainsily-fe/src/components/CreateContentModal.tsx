@@ -32,7 +32,6 @@ export function CreateContentModel({ isModal, setIsModal, createContent }: Creat
             const errors: Record<string, string[]> = {};
             error.issues.forEach((err) => {
                 err.path.forEach((path) => {
-                    console.log(path.toString());
                     if (!errors[path.toString()])
                         errors[path.toString()] = []
                     errors[path.toString()].push(err.message);

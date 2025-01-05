@@ -11,6 +11,7 @@ export function SideBar({ setFilter }: { setFilter?: Dispatch<SetStateAction<str
                 <h2 className="text-4xl">Brainsily</h2>
             </div>
             <div className={"grid grid-flow-row ml-4 gap-2"}>
+                <SiderBarItem itemName={'all'} setFilter={setFilter} />
                 <SiderBarItem itemName={'tweet'} setFilter={setFilter} />
                 <SiderBarItem itemName={'ytvid'} setFilter={setFilter} />
                 <SiderBarItem itemName={'text'} setFilter={setFilter} />

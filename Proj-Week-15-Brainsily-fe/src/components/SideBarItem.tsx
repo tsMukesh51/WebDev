@@ -10,7 +10,7 @@ type ContentType = (typeof contentType)[number] | 'all';
 
 const sideBarItems: Record<ContentType, { title: string, icon: JSX.Element }> = {
     'all': {
-        'title': 'Tweets',
+        'title': 'All',
         'icon': <></>
     },
     'tweet': {

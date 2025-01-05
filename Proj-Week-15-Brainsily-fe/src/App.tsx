@@ -4,6 +4,7 @@ import { Dashboard } from './pages/Dashboard'
 import { Signup } from './pages/Signup'
 import { Signin } from './pages/Signin'
 import { RedirectRight } from './components/RedirectRight'
+import { Welcome } from './pages/Welcome'
 
 export function AddLibrary(url: string) {
   const script = document.createElement("script");
@@ -18,7 +19,7 @@ function App() {
       <Route path='/signup' element={<RedirectRight comp={<Signup />} />} />
       <Route path='/signin' element={<RedirectRight comp={<Signin />} />} />
       <Route path='/dashboard' element={<RedirectRight comp={<Dashboard />} />} />
-      <Route path='/' element={<RedirectRight comp={<Dashboard />} />} />
+      <Route path='/' element={<RedirectRight comp={<Welcome />} />} />
     </Routes>
   </BrowserRouter>
 }

@@ -4,7 +4,7 @@ interface TextInputProps {
     placeholder: string,
     reference?: any,
     name?: string,
-    errors?: string[],
+    errors?: string[] | undefined,
     OnChangeState?: Dispatch<SetStateAction<string>>
 }
 

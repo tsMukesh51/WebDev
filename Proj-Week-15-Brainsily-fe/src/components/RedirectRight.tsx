@@ -2,9 +2,10 @@ import { ReactElement } from "react";
 import { Signin } from "../pages/Signin";
 import { Signup } from "../pages/Signup";
 import { Dashboard } from "../pages/Dashboard";
+import { Welcome } from "../pages/Welcome";
 
 const authenticatedRoutes = [Dashboard];
-const unauthenticatedRoutes = [Signin, Signup]
+const unauthenticatedRoutes = [Signin, Signup, Welcome];
 
 export function RedirectRight({ comp }: { comp: JSX.Element }): ReactElement {
     function isAuthenticated() {
@@ -40,18 +41,15 @@ export function RedirectRight({ comp }: { comp: JSX.Element }): ReactElement {
     }
 
     if (authenticatedRoutes.includes(comp.type)) {
-        console.log('auth')
         if (isAuthenticated()) {
-            console.log('suthed')
             return comp;
         } else {
             history.replaceState({}, "", '/signin');
             return <Signin />;
         }
     } else if (unauthenticatedRoutes.includes(comp.type)) {
-        console.log('unauth')
         if (isAuthenticated()) {
-            history.replaceState({}, "", '/');
+            history.replaceState({}, "", '/dashboard');
             return <Dashboard />;
         } else {
             return comp;
