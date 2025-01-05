@@ -8,7 +8,7 @@ export function Logout() {
         localStorage.removeItem('token');
         navigate('/signin');
     }
-    return <button onClick={logout} className="ml-5 mr-auto p-2">
+    return <button onClick={logout} className="mr-5 text-left p-2">
         <LogoutIcon />
     </button>
 }

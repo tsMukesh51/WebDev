@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction } from "react";
 import { BrainIcon } from "../assets/BrainIcon";
 import { SiderBarItem } from "./SideBarItem";
 import { Logout } from "./Logout";
+import { GitHubIcon } from "../assets/GitHubIcon";
+import { Link } from "react-router-dom";
 
 export function SideBar({ setFilter }: { setFilter?: Dispatch<SetStateAction<string>> }) {
     return <div className={"flex flex-col justify-between h-full"}>
@@ -18,6 +20,10 @@ export function SideBar({ setFilter }: { setFilter?: Dispatch<SetStateAction<str
                 <SiderBarItem itemName={'link'} setFilter={setFilter} />
             </div>
         </div>
-        <Logout />
+        <div className="flex flex-col items-end">
+            <Link to={'https://github.com/tsMukesh51/WebDev/tree/master/Proj-Week-15-Brainsily-fe'} target="_blank" className="mr-5 p-2 mb-3 flex gap-2 items-center">
+                <GitHubIcon /> <p className="text-2xl">GitHub Repo</p></Link>
+            <Logout />
+        </div>
     </div>
 }
