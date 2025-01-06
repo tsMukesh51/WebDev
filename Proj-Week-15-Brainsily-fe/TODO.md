@@ -6,7 +6,7 @@
 - [x] Parse and store only video or tweet id. Then parse the same below for them to check in CreateContentModal
 - [x] Allow users to filter contents by `contentFormat`.
 - [x] Add unauthenticated home page
-- [ ] Add Github Repo Link
+- [x] Add Github Repo Link
 
 ## Bugs to Fix
 - [x] Fix width/height issues in `contentFormatIcons`.

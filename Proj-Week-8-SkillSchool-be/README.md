@@ -41,6 +41,8 @@ This project was built to:
 ### **Course APIs**
 - **Get All Courses**: Fetch a list of all available courses (to be detailed in `routes/course`).
 
+Find API Doc in [endpoint.md](endpoints.md)
+
 ---
 
 ## Getting Started
