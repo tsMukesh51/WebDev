@@ -2,6 +2,8 @@
 
 This is the frontend documentation for the **Brainsily** project, a practice project focused on creating an intuitive content management dashboard. The frontend is built with React, TypeScript, TailwindCSS, and Vite.
 
+For the backend source, please refer to [WebDev/Proj-Week-15-Brainsily-be](../Proj-Week-15-Brainsily-be/)
+
 ---
 
 ## **Table of Contents**

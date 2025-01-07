@@ -2,6 +2,8 @@
 
 Brainsily is your second brain for organizing and accessing your favorite content. This backend service powers the application, enabling features like user authentication, content management, and sharing curated knowledge.
 
+For the frontend source, please refer to [WebDev/Proj-Week-15-Brainsily-fe](../Proj-Week-15-Brainsily-fe/)
+
 ---
 
 ## Tech Stack
