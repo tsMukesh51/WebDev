@@ -27,7 +27,7 @@ export function Dashboard() {
           <CreateContentModel isModal={isModal} setIsModal={setIsModal} createContent={createContent} />
         </div>
       </div>
-      <div className='grid auto-fit-[320px] gap-4 overflow-y-auto h-[calc(100%-48px)] pb-4'>
+      <div className='grid auto-fill-[320px] gap-4 overflow-y-auto h-[calc(100%-48px)] pb-4'>
         {contents.map((content) => {
           if (filter == 'all')
             return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />

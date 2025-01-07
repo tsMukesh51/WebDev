@@ -104,22 +104,22 @@ Special thanks to my mentor **[Kirat](https://github.com/hkirat)** for guiding m
 ## **Screenshots**
 
 1. **Welcome Page**
-   - *[Placeholder for Welcome Page screenshot]*
+   ![Welcome Page screenshot](Welcome.png)
 
 2. **Login Page**
-   - *[Placeholder for Login Page screenshot]*
+   ![Login Page screenshot](Authentication.png)
 
 3. **Dashboard Overview**
-   - *[Placeholder for Dashboard screenshot]*
+   ![Dashboard screenshot](Dashboard.png)
 
 4. **Adding New Content**
-   - *[Placeholder for Dashboard - Adding New Content screenshot]*
+   ![Adding New Content screenshot](CreateTweet.png)
 
 5. **Selecting a Content Type**
-   - *[Placeholder for Dashboard - Selecting Content Type screenshot]*
+   ![Selecting Content Type screenshot](Catergorize.png)
 
 ---
 
-## **License**
-This project currently does not have a license. If you'd like to add one, consider reviewing the [Open Source Initiative](https://opensource.org/licenses) to select a suitable license for your project.
+<!-- ## **License**
+This project currently does not have a license. If you'd like to add one, consider reviewing the [Open Source Initiative](https://opensource.org/licenses) to select a suitable license for your project. -->
 

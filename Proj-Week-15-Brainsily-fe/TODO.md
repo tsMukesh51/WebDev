@@ -7,6 +7,8 @@
 - [x] Allow users to filter contents by `contentFormat`.
 - [x] Add unauthenticated home page
 - [x] Add Github Repo Link
+- [ ] Implement share button and Share Content in FE
+- [ ] Confirm before deleting
 
 ## Bugs to Fix
 - [x] Fix width/height issues in `contentFormatIcons`.
@@ -15,6 +17,7 @@
 
 ## Long-term Ideas
 - [ ] Integrate Markdown support for content body.
+- [ ] Refactor comp to be more general, modular.
 <!-- - [ ] Integrate AI for summarizing content. -->
 - [ ] Add tags/categories for better content organization.
 

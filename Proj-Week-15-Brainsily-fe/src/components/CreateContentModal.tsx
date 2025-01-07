@@ -7,7 +7,7 @@ import { Button } from "./Button";
 import { createContentType } from "../hooks/useContent";
 import { RadioInput } from "./RadioInput";
 import { contentType } from "../schema";
-import { TweetEmbed, YouTubeEmbed } from "./SMPostEmbed";
+import { CleanYtUrl, TweetEmbed, YouTubeEmbed } from "./SMPostEmbed";
 
 interface CreateContentModalProps {
     isModal: boolean,
@@ -41,11 +41,7 @@ export function CreateContentModel({ isModal, setIsModal, createContent }: Creat
             return;
         } else {
             if (content.contentFormat == 'ytvid') {
-                content.body = content.body
-                    .replace('youtu.be', 'youtube.com')
-                    .replace('youtube.com', 'youtube-nocookie.com')
-                    .replace("watch", "embed")
-                    .replace("?v=", "/")
+                content.body = CleanYtUrl({ url: content.body });
             }
             createContent(content, setIsModal);
         }
