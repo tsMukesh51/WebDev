@@ -7,9 +7,11 @@ import { CreateContentModel } from '../components/CreateContentModal'
 import { SideBar } from '../components/SideBar'
 import { useContent } from '../hooks/useContent'
 import { useScript } from '../hooks/useScript'
+import { ShareBrainModal } from '../components/ShareBrainModal'
 
 export function Dashboard() {
   const [isModal, setIsModal] = useState(false);
+  const [isShareModal, setIsShareModal] = useState(false);
   const { contents, deleteContent, createContent } = useContent();
   useScript({ url: "https://platform.twitter.com/widgets.js" });
   const [filter, setFilter] = useState('all');
@@ -22,7 +24,8 @@ export function Dashboard() {
       <div className='flex justify-between items-center w-full mb-8'>
         <h3 className='font-semibold text-3xl'>All Notes</h3>
         <div className="flex gap-6">
-          <Button variant='primary' text='Share Brain' size='lg' startIcon={<ShareIcon />}></Button>
+          <Button variant='primary' text='Share Brain' size='lg' startIcon={<ShareIcon />} OnClick={() => { setIsShareModal(true) }}></Button>
+          <ShareBrainModal isShareModal={isShareModal} setIsShareModal={setIsShareModal} />
           <Button variant='secondary' text='Add Content' size='lg' startIcon={<PlusIcon />} OnClick={() => { setIsModal(true) }}></Button>
           <CreateContentModel isModal={isModal} setIsModal={setIsModal} createContent={createContent} />
         </div>
