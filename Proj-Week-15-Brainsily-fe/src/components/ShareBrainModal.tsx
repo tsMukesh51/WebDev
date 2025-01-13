@@ -12,6 +12,32 @@ interface ShareBrainModalProps {
 export function ShareBrainModal({ isShareModal, setIsShareModal }: ShareBrainModalProps) {
     const dialog = useRef<HTMLDialogElement>(null);
     const [sharedLink, setSharedLink] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        axios.get(`${BACKEND_URL}/api/v1/brain/share`, {
+            headers: {
+                'Authorization': localStorage.getItem('token')
+            }
+        })
+            .then((res) => {
+                if (res.data.msg == 'Share link created successfully') {
+                    if (inputRef.current)
+                        inputRef.current.checked = true;
+                    setSharedLink(() => res.data.sharedLink);
+                }
+                else if (res.data.msg == 'Share link disabled') {
+                    if (inputRef.current)
+                        inputRef.current.checked = false;
+                    setSharedLink(() => '');
+                }
+            })
+            .catch((res) => {
+                console.log(res);
+                alert('something went wrong');
+            });
+    }, []);
+
     useEffect(() => {
         if (dialog) {
             if (isShareModal)
@@ -20,6 +46,7 @@ export function ShareBrainModal({ isShareModal, setIsShareModal }: ShareBrainMod
                 dialog.current?.close();
         }
     }, [isShareModal]);
+
     function OnChangeHandle(shareState: boolean) {
         axios.post(`${BACKEND_URL}/api/v1/brain/share`, {
             isShared: shareState
@@ -39,6 +66,7 @@ export function ShareBrainModal({ isShareModal, setIsShareModal }: ShareBrainMod
                 alert('something went wrong');
             })
     }
+
     return <dialog ref={dialog} className="rounded-lg">
         <div className="p-3 w-full">
 
@@ -47,15 +75,15 @@ export function ShareBrainModal({ isShareModal, setIsShareModal }: ShareBrainMod
                     <CloseIcon />
                 </button>
             </div>
-            <div className="flex justify-between">
-                <label htmlFor="isShared">
+            <div className="flex justify-between w-40">
+                <label htmlFor="isShared">Public
                 </label>
-                <input type="checkbox" id="isShared" onChange={(e) => OnChangeHandle(e.target.checked)}></input>
+                <input ref={inputRef} type="checkbox" id="isShared" onChange={(e) => OnChangeHandle(e.target.checked)}></input>
             </div>
 
             {sharedLink != '' &&
                 <div>
-                    <p>{sharedLink}</p>
+                    <p>{window.location.origin}/shared/{sharedLink}</p>
                 </div>}
 
         </div>

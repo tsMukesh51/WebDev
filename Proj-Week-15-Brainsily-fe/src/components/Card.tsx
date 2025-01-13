@@ -12,7 +12,7 @@ import { LinkIcon } from "../assets/LinkIcon";
 import { TweetEmbed, YouTubeEmbed } from "./SMPostEmbed";
 
 type CardProps = z.infer<typeof contentSchema> & {
-    deleteContent: (contentId: Types.ObjectId) => void;
+    deleteContent?: (contentId: Types.ObjectId) => void;
 };
 //'text', 'tweet', 'ytvid', 'link'
 const contentFormatIcons = {
@@ -33,7 +33,7 @@ export function Card({ id, contentFormat, body, title, createdAt, deleteContent 
             <p className="grow text-2xl">{title}</p>
             <div className="flex items-center gap-3 p-2 text-gray-500 shrink-0">
                 <button onClick={() => { }}><ShareIcon /></button>
-                <button onClick={() => { deleteContent(id) }}><Dustbin /></button>
+                <button onClick={() => { if (deleteContent) deleteContent(id) }}><Dustbin /></button>
             </div>
         </div>
         <div className="overflow-y-auto h-full">

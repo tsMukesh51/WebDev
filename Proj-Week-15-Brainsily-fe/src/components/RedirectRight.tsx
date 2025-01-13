@@ -3,9 +3,10 @@ import { Signin } from "../pages/Signin";
 import { Signup } from "../pages/Signup";
 import { Dashboard } from "../pages/Dashboard";
 import { Welcome } from "../pages/Welcome";
+import { Shareboard } from "../pages/Shareboard";
 
 const authenticatedRoutes = [Dashboard];
-const unauthenticatedRoutes = [Signin, Signup, Welcome];
+const unauthenticatedRoutes = [Signin, Signup, Welcome, Shareboard];
 
 export function RedirectRight({ comp }: { comp: JSX.Element }): ReactElement {
     function isAuthenticated() {
@@ -40,6 +41,8 @@ export function RedirectRight({ comp }: { comp: JSX.Element }): ReactElement {
         return false;
     }
 
+    if (comp.type == Shareboard)
+        return <Shareboard />
     if (authenticatedRoutes.includes(comp.type)) {
         if (isAuthenticated()) {
             return comp;

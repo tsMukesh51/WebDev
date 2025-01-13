@@ -7,7 +7,12 @@ import { Types } from 'mongoose';
 
 export const createContentType = contentSchema.omit({ id: true, createdAt: true });
 
-export function useContent() {
+interface useContentProps {
+    comp?: string,
+    shareLink?: string
+}
+
+export function useContent({ comp = 'Dashboard', shareLink = "" }: useContentProps) {
     const [contents, setContents] = useState<z.infer<typeof contentSchema>[]>([]);
 
     function getContents() {
@@ -16,6 +21,16 @@ export function useContent() {
                 'Authorization': localStorage.getItem('token')
             }
         })
+            .then((response) => {
+                setContents(response.data.contents);
+            })
+            .catch((response) => {
+                console.log(response);
+            });
+    }
+
+    function getSharedContents(shareLink: string) {
+        axios.get(`${BACKEND_URL}/api/v1/brain/${shareLink}`, {})
             .then((response) => {
                 setContents(response.data.contents);
             })
@@ -70,8 +85,11 @@ export function useContent() {
     }
 
     useEffect(() => {
-        getContents();
+        if (comp == 'Dashboard')
+            getContents();
+        else if (comp == 'Shareboard')
+            getSharedContents(shareLink);
     }, []);
 
-    return { contents, refresh: getContents, deleteContent, createContent };
+    return { contents, sharedContents: getSharedContents, refresh: getContents, deleteContent, createContent };
 }

@@ -201,6 +201,42 @@ app.post("/api/v1/brain/share", userAuth, async (req, res) => {
     }
 });
 
+app.get("/api/v1/brain/share", userAuth, async (req, res) => {
+    if (!req.userId) {
+        res.status(500).json({
+            msg: 'Internal Server Error, user not found'
+        })
+        return;
+    }
+    try {
+        const updateShared = await UserModel.findOne({ _id: req.userId });
+        if (!updateShared) {
+            console.log("user not found");
+            res.status(500).json({
+                msg: 'Internal Server Error'
+            });
+            return;
+        }
+        if (updateShared.isShared) {
+            const sharedLink = encryptUserId(req.userId);
+            res.status(200).json({
+                msg: 'Share link created successfully',
+                sharedLink: sharedLink
+            });
+            return;
+        } else {
+            res.status(200).json({
+                msg: 'Share link disabled'
+            })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        })
+    }
+});
+
 app.get("/api/v1/brain/:shareLink", async (req, res) => {
     const userId = decryptUserId(req.params.shareLink);
     if (userId === 'undefined' || userId === null) {
