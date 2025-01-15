@@ -10,9 +10,13 @@ import { TwitterIcon } from "../assets/TwitterIcon";
 import { YouTubeIcon } from "../assets/YouTubeIcon";
 import { LinkIcon } from "../assets/LinkIcon";
 import { TweetEmbed, YouTubeEmbed } from "./SMPostEmbed";
+import { useToast } from "../hooks/useToast";
+import { Dispatch, MutableRefObject } from "react";
 
 type CardProps = z.infer<typeof contentSchema> & {
     deleteContent?: (contentId: Types.ObjectId) => void;
+    setToastNoti?: Dispatch<React.SetStateAction<JSX.Element[]>>;
+    toastCount?: MutableRefObject<number>;
 };
 //'text', 'tweet', 'ytvid', 'link'
 const contentFormatIcons = {
@@ -24,7 +28,15 @@ const contentFormatIcons = {
 
 const defaultStyles = "bg-white rounded-xl shadow-md border-slate-200 border-[1px] p-5 w-full max-h-[510px] flex flex-col gap-6";
 
-export function Card({ id, contentFormat, body, title, createdAt, deleteContent }: CardProps) {
+export function Card({ id, contentFormat, body, title, createdAt, deleteContent, setToastNoti, toastCount }: CardProps) {
+
+    const { notify } = useToast({ setToastNoti, toastCount });
+    function ShareClickHandler() {
+        navigator.clipboard.writeText(body)
+            .catch((err) => console.log(`not copied ${err}`));
+        notify();
+    }
+
     return <div key={id.toString()} className={defaultStyles}>
         <div className="flex items-center justify-between gap-3">
             <div className="shrink-0">
@@ -32,7 +44,7 @@ export function Card({ id, contentFormat, body, title, createdAt, deleteContent 
             </div>
             <p className="grow text-2xl">{title}</p>
             <div className="flex items-center gap-3 p-2 text-gray-500 shrink-0">
-                <button onClick={() => { }}><ShareIcon /></button>
+                <button onClick={() => { ShareClickHandler() }}><ShareIcon /></button>
                 <button onClick={() => { if (deleteContent) deleteContent(id) }}><Dustbin /></button>
             </div>
         </div>

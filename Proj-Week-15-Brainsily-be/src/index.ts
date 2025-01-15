@@ -238,6 +238,12 @@ app.get("/api/v1/brain/share", userAuth, async (req, res) => {
 });
 
 app.get("/api/v1/brain/:shareLink", async (req, res) => {
+    if (req.params.shareLink.length != 64) {
+        res.status(400).json({
+            msg: 'User not found'
+        });
+        return;
+    }
     const userId = decryptUserId(req.params.shareLink);
     if (userId === 'undefined' || userId === null) {
         res.status(400).json({

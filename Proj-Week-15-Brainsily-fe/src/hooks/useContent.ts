@@ -36,6 +36,7 @@ export function useContent({ comp = 'Dashboard', shareLink = "" }: useContentPro
             })
             .catch((response) => {
                 console.log(response);
+                setContents(null);
             });
     }
 

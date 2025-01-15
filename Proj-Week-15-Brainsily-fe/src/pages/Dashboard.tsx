@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '../components/Button'
 import { ShareIcon } from '../assets/ShareIcon'
 import { PlusIcon } from '../assets/PlusIcon'
@@ -13,6 +13,8 @@ export function Dashboard() {
   const [isShareModal, setIsShareModal] = useState(false);
   const { contents, deleteContent, createContent } = useContent({});
   const [filter, setFilter] = useState('all');
+  const [toastNoti, setToastNoti] = useState<JSX.Element[]>();
+  const toastCount = useRef(0);
 
   return <div className={'grid grid-cols-12'}>
     <div className={'p-5 col-span-2 border-r-2 border-slate-300 h-screen'}>
@@ -31,13 +33,14 @@ export function Dashboard() {
       <div className='grid auto-fill-[320px] gap-4 overflow-y-auto h-[calc(100%-48px)] pb-4'>
         {contents.map((content) => {
           if (filter == 'all')
-            return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />
+            return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} setToastNoti={setToastNoti} toastCount={toastCount} />
           if (filter == content.contentFormat)
-            return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} />
+            return <Card key={content.id.toString()} id={content.id} contentFormat={content.contentFormat} body={content.body} title={content.title} createdAt={content.createdAt} authorName={content.authorName} deleteContent={deleteContent} setToastNoti={setToastNoti} toastCount={toastCount} />
           return <></>
         })}
       </div>
     </div>
+    <div className='fixed bottom-48 left-1/2 w-128 h-[1px] -translate-x-1/2'>{toastNoti}</div>
   </div>
 
 }

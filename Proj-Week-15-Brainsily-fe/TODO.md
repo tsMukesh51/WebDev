@@ -7,7 +7,7 @@
 - [x] Allow users to filter contents by `contentFormat`.
 - [x] Add unauthenticated home page
 - [x] Add Github Repo Link
-- [ ] Implement share button and Share Content in FE
+- [x] Implement share button and Share Content in FE
 - [ ] Confirm before deleting
 
 ## Bugs to Fix
