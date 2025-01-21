@@ -6,6 +6,12 @@ For the frontend source, please refer to [WebDev/Proj-Week-15-Brainsily-fe](../P
 
 ---
 
+## Live Demo
+
+Check out the live application here: [Brainsily Live](https://brainsily.vercel.app/)
+
+---
+
 ## Tech Stack
 
 - **Language**: TypeScript

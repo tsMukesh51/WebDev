@@ -6,6 +6,12 @@ For the backend source, please refer to [WebDev/Proj-Week-15-Brainsily-be](../Pr
 
 ---
 
+## Live Demo
+
+Check out the live application here: [Brainsily Live](https://brainsily.vercel.app/)
+
+---
+
 ## **Table of Contents**
 
 1. [Project Overview](#project-overview)
