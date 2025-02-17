@@ -5,16 +5,33 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 
 const secret = "fjlaskjffas";
 
-const userAuth = async (req: CustRequest, res: CustResponse, next: NextFunction) => {
-    const token = req.headers["authorization"] ?? "";
-    const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded && typeof decoded != "string" && decoded.userId) {
-        req.userId = decoded.userId;
-        next();
-    } else {
-        res.status(403).send({
-            message: "Unauthorized"
-        });
+const userAuth = async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers["authorization"]?.split(" ")[1] ?? "";
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        if (decoded && typeof decoded != "string" && decoded.userId) {
+            req.userId = decoded.userId;
+            next();
+        } else {
+            res.status(403).send({
+                message: "Unauthorized",
+                error: {
+                    name: "JsonWebTokenError"
+                }
+            });
+            return;
+        }
+    } catch (err: any) {
+        if (err.name === "JsonWebTokenError") {
+            res.status(403).send({
+                message: "Unauthorized",
+                error: {
+                    name: "JsonWebTokenError"
+                }
+            });
+            return;
+        }
     }
 }
 

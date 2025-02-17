@@ -1,19 +1,28 @@
 import Express from "express";
 import { prisma } from "@repo/db";
+import { CreateBoard } from "@repo/common";
 
 const boardRoute = Express.Router();
 
 boardRoute.post('/create', (req, res) => {
-    prisma.board.create({
-        data: {
-            boardName: 'dsa logic',
-            slug: 'dsa-logic',
-            isPublic: false,
-            adminId: "550e8400-e29b-41d4-a716-446655440000"
-        }
-    })
+    const { success, data, error } = CreateBoard.safeParse(req.body);
+    if (!success)
+        res.json({
+            message: "invalid format",
+            data: null,
+            error: error.issues
+        })
+    if (success)
+        prisma.board.create({
+            data: {
+                boardName: req.body.boardName,
+                slug: req.body.slug,
+                isPublic: false,
+                adminId: req.userId
+            }
+        })
     res.json({
-        message: 'Room created'
+        message: 'board created'
     })
 });
 
