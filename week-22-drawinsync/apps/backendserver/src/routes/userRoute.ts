@@ -67,6 +67,7 @@ userRoute.post('/signin', async (req, res) => {
         })
         return;
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             message: 'Something went wrong'
         });
