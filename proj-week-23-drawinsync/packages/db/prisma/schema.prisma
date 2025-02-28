@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  userName           String              @unique
+  email              String              @unique
+  password           String
+  profilePic         String?
+  Board              Board[]
+  BoardCollaborators BoardCollaborator[]
+  Elements           Element[]
+}
+
+model Board {
+  id                 String              @id @default(uuid())
+  boardName          String
+  slug               String              @unique
+  authorId           String
+  Author             User                @relation(references: [id], fields: [authorId])
+  BoardCollaborators BoardCollaborator[]
+  Elements           Element[]
+}
+
+model BoardCollaborator {
+  collaboratorId String
+  boardId        String
+  Collaborator   User   @relation(references: [id], fields: [collaboratorId])
+  Board          Board  @relation(references: [id], fields: [boardId])
+
+  @@id([collaboratorId, boardId])
+}
+
+model Element {
+  id              String @id @default(uuid())
+  shapeType       String
+  shapeProperties Json
+  boardId         String
+  authorId        String
+  Board           Board  @relation(references: [id], fields: [boardId])
+  Author          User   @relation(references: [id], fields: [authorId])
+}
