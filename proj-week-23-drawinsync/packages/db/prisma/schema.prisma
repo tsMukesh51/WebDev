@@ -22,25 +22,31 @@ model User {
   Board              Board[]
   BoardCollaborators BoardCollaborator[]
   Elements           Element[]
+
+  @@map("user")
 }
 
 model Board {
   id                 String              @id @default(uuid())
   boardName          String
   slug               String              @unique
-  authorId           String
-  Author             User                @relation(references: [id], fields: [authorId])
+  onwerId            String
+  Onwer              User                @relation(references: [id], fields: [onwerId])
   BoardCollaborators BoardCollaborator[]
   Elements           Element[]
+
+  @@map("board")
 }
 
 model BoardCollaborator {
-  collaboratorId String
-  boardId        String
-  Collaborator   User   @relation(references: [id], fields: [collaboratorId])
-  Board          Board  @relation(references: [id], fields: [boardId])
+  collaboratorId   String
+  boardId          String
+  collaboratorType CollaboratorType @default(VIEWER)
+  Collaborator     User             @relation(references: [id], fields: [collaboratorId])
+  Board            Board            @relation(references: [id], fields: [boardId])
 
   @@id([collaboratorId, boardId])
+  @@map("board_collaborator")
 }
 
 model Element {
@@ -51,4 +57,11 @@ model Element {
   authorId        String
   Board           Board  @relation(references: [id], fields: [boardId])
   Author          User   @relation(references: [id], fields: [authorId])
+
+  @@map("element")
+}
+
+enum CollaboratorType {
+  EDITOR
+  VIEWER
 }
