@@ -32,17 +32,17 @@ userRoute.post('/signup', async (req, res) => {
         });
         return;
     } catch (err: any) {
-        console.log(err);
-        if (err.code === 'P2002') {
-            res.status(411).json({
-                message: "User already exists"
+        console.log(JSON.stringify(err));;
+        if (err.name == "PrismaClientKnownRequestError" && err.code === 'P2002') {
+            res.status(409).json({
+                message: "User already exists",
+                alreadyTaken: err.meta.target
             });
             return;
         }
         res.status(500).json({
             message: "DB Connection Error occured"
         });
-        return;
     }
 });
 
@@ -64,8 +64,6 @@ userRoute.post('/signin', async (req, res) => {
             });
             return;
         }
-        console.log(data.password);
-        console.log(oldUser.password);
         if (!process.env.HASH_PASSWORD_SECRET) {
             res.status(500).json({
                 message: "Hash Secret not found"
@@ -73,15 +71,14 @@ userRoute.post('/signin', async (req, res) => {
             return;
         }
         const isAuthenticated = await argon2.verify(oldUser.password, data.password, { secret: Buffer.from(process.env.HASH_PASSWORD_SECRET) });
-        console.log(isAuthenticated);
         if (isAuthenticated) {
-            if (!process.env.JWT_SECRET) {
+            if (!process.env.USER_JWT_SECRET) {
                 res.status(500).json({
-                    message: 'JWT_SECRET not found'
+                    message: 'USER_JWT_SECRET not found'
                 });
                 return;
             }
-            const token = jwt.sign({ userId: oldUser.id, userName: oldUser.userName }, process.env.JWT_SECRET, { expiresIn: 24 * 3600 });
+            const token = jwt.sign({ userId: oldUser.id, userName: oldUser.userName }, process.env.USER_JWT_SECRET, { expiresIn: 24 * 3600 });
             res.json({
                 message: 'Login successful',
                 token: token
@@ -94,7 +91,7 @@ userRoute.post('/signin', async (req, res) => {
         }
 
     } catch (err) {
-        console.log(err);
+        console.log(JSON.stringify(err));;
         res.status(500).json({
             message: "DB Connection Error occured"
         });

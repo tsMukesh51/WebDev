@@ -23,6 +23,10 @@ model User {
   BoardCollaborators BoardCollaborator[]
   Elements           Element[]
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+
   @@map("user")
 }
 
@@ -30,10 +34,14 @@ model Board {
   id                 String              @id @default(uuid())
   boardName          String
   slug               String              @unique
-  onwerId            String
-  Onwer              User                @relation(references: [id], fields: [onwerId])
+  ownerId            String              @map("onwerId")
+  Onwer              User                @relation(references: [id], fields: [ownerId])
   BoardCollaborators BoardCollaborator[]
   Elements           Element[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
 
   @@map("board")
 }
@@ -45,18 +53,26 @@ model BoardCollaborator {
   Collaborator     User             @relation(references: [id], fields: [collaboratorId])
   Board            Board            @relation(references: [id], fields: [boardId])
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+
   @@id([collaboratorId, boardId])
-  @@map("board_collaborator")
+  @@index([boardId])
 }
 
 model Element {
-  id              String @id @default(uuid())
-  shapeType       String
+  id              String    @id @default(uuid())
+  shapeType       ShapeType
   shapeProperties Json
   boardId         String
   authorId        String
-  Board           Board  @relation(references: [id], fields: [boardId])
-  Author          User   @relation(references: [id], fields: [authorId])
+  Board           Board     @relation(references: [id], fields: [boardId])
+  Author          User      @relation(references: [id], fields: [authorId])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
 
   @@map("element")
 }
@@ -64,4 +80,10 @@ model Element {
 enum CollaboratorType {
   EDITOR
   VIEWER
+}
+
+enum ShapeType {
+  RECTANGLE
+  CIRCLE
+  LINE
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const collaboratorEnum = z.enum(['editor', 'viewer']);
+const collaboratorEnum = z.enum(["EDITOR", "VIEWER"]);
 
 export const CreateUserSchema = z.object({
     userName: z.string().min(6).max(40),

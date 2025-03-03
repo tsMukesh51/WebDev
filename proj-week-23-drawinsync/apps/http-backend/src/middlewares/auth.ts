@@ -10,13 +10,13 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
         });
         return;
     }
-    if (!process.env.JWT_SECRET) {
+    if (!process.env.USER_JWT_SECRET) {
         res.status(500).json({
-            message: "JWT_SECRET not found"
+            message: "USER_JWT_SECRET not found"
         });
         return;
     }
-    const oldUser = jwt.verify(token, process.env.JWT_SECRET);
+    const oldUser = jwt.verify(token, process.env.USER_JWT_SECRET);
     if (typeof oldUser == "string") {
         res.status(403).json({
             message: "Invalid token"
@@ -34,3 +34,7 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
     next();
 }
 
+export const something = (req: Request, res: Response, next: NextFunction) => {
+    console.log('board route');
+    next();
+}
