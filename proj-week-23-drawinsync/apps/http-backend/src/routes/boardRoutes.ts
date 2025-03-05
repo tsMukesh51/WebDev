@@ -1,11 +1,10 @@
 import { NextFunction, Router } from "express";
 import { something, userAuth } from "../middlewares/auth";
 import { prisma } from "@repo/db";
-import { CreateBoard, UpdateCollaborator } from "@repo/lib/types";
+import { collaboratorEnum, CreateBoard, UpdateCollaborator } from "@repo/lib/types";
 import jwt from "jsonwebtoken";
 
 const boardRoute = Router();
-// boardRoute.use(something);
 boardRoute.use(userAuth);
 
 boardRoute.get('/my-boards', async (req, res) => {
@@ -76,7 +75,8 @@ boardRoute.post('/create', async (req, res) => {
                 ownerId: req.userId,
                 BoardCollaborators: {
                     create: {
-                        collaboratorId: req.userId
+                        collaboratorId: req.userId,
+                        collaboratorType: "EDITOR"
                     }
                 }
             },
@@ -175,42 +175,51 @@ boardRoute.post('/update-collaborator', async (req, res) => {
     }
 });
 
-
 boardRoute.get('/get-token/:boardId', async (req, res) => {
     if (!req.params.boardId) {
         res.status(400).json({
             message: "BoardId is missing"
         });
         return;
-    }// transform to isOnwer, collaboratorType json and send.
+    }
     try {
-        const board = await prisma.board.findFirst({
+        const dbBoard = await prisma.board.findFirst({
             where: {
                 id: req.params.boardId,
-                BoardCollaborators: {
-                    some: {
-                        collaboratorId: req.userId,
-                    },
-
-                },
             },
-            select: {
-                id: true,
-                boardName: true,
-                slug: true,
-                BoardCollaborators: {
-                    where: {
-                        collaboratorId: req.userId
-                    }
-                }
-            }
         });
-        if (!board) {
+        if (!dbBoard) {
             res.status(404).json({
-                message: "Board not found or not accessible to you"
+                message: "Board not found"
             });
             return;
         }
+        const dbCollaborator = await prisma.boardCollaborator.findFirst({
+            where: {
+                boardId: dbBoard.id,
+                collaboratorId: req.userId
+            }
+        });
+        if (!dbCollaborator) {
+            const dbOwner = await prisma.user.findFirst({
+                where: {
+                    id: dbBoard.ownerId
+                }
+            });
+            res.status(403).json({
+                message: "Board is not accessible to you",
+                boardOwner: dbOwner?.userName
+            });
+            return;
+        }
+        const board = {} as {
+            boardId: string;
+            collaboratorId: string;
+            collaboratorType: string;
+        };
+        board.boardId = dbBoard.id;
+        board.collaboratorId = dbCollaborator.collaboratorId;
+        board.collaboratorType = dbCollaborator.collaboratorType;
         const wsToken = jwt.sign(board, process.env.WS_JWT_SECRET!, { expiresIn: '1d' });
         res.json({
             message: "Websocket token generated successfully",
@@ -225,7 +234,7 @@ boardRoute.get('/get-token/:boardId', async (req, res) => {
     }
 });
 
-boardRoute.get('/slug-board/:slug', async (req, res) => {
+boardRoute.get('/slug-board-id/:slug', async (req, res) => {
     const { success, data, error } = CreateBoard.pick({ slug: true }).safeParse(req.params);
     if (!success) {
         res.status(400).json({
@@ -233,11 +242,14 @@ boardRoute.get('/slug-board/:slug', async (req, res) => {
             error: error.issues
         });
         return;
-    }// add the collaborator permissions also
+    }
     try {
         const dbBoard = await prisma.board.findFirst({
             where: {
                 slug: data.slug
+            },
+            select: {
+                id: true
             }
         });
         if (dbBoard) {
@@ -262,5 +274,69 @@ boardRoute.get('/slug-board/:slug', async (req, res) => {
     }
 
 })
+
+boardRoute.get('/board-details-by-id/:boardId', async (req, res) => {
+    if (!req.params.boardId) {
+        res.status(400).json({
+            message: "BoardId is Empty"
+        });
+    }
+
+    try {
+        const dbBoard = await prisma.board.findFirst({
+            where: {
+                id: req.params.boardId
+            }
+        });
+        if (!dbBoard) {
+            res.status(404).json({
+                message: "Board not found",
+                boardId: req.params.boardId
+            });
+            return;
+        }
+        const dbCollaborators = await prisma.boardCollaborator.findMany({
+            where: {
+                boardId: dbBoard.id
+            }
+        });
+        const isCollaborator = dbCollaborators.find((collaborator) => {
+            return collaborator.collaboratorId == req.userId;
+        });
+        if (!isCollaborator) {
+            const dbOwner = await prisma.user.findFirst({
+                where: {
+                    id: dbBoard.ownerId
+                }
+            });
+            res.status(403).json({
+                message: "Board is not accessible to you",
+                boardOwner: dbOwner?.userName
+            });
+            return;
+        }
+        // if collabo
+        const collaborators = dbCollaborators.map((collaborator) => {
+            return collaborator.collaboratorId;
+        });
+        res.json({
+            message: "Board details",
+            board: dbBoard,
+            collaborators: collaborators
+        });
+        return;
+    } catch (err) {
+        console.log(JSON.stringify(err));
+        res.status(500).json({
+            message: "Error while getting Board data"
+        });
+        return;
+    }
+});
+
+//get all elements 
+boardRoute.get('/elements/:boardId', async (req, res) => {
+    res.send('hi there');
+});
 
 export { boardRoute }
