@@ -1,7 +1,7 @@
 import { NextFunction, Router } from "express";
 import { something, userAuth } from "../middlewares/auth";
 import { prisma } from "@repo/db";
-import { collaboratorEnum, CreateBoard, UpdateCollaborator } from "@repo/lib/types";
+import { collaboratorEnum, CreateBoard, UpdateCollaborator, Uuid } from "@repo/lib/types";
 import jwt from "jsonwebtoken";
 
 const boardRoute = Router();
@@ -336,7 +336,45 @@ boardRoute.get('/board-details-by-id/:boardId', async (req, res) => {
 
 //get all elements 
 boardRoute.get('/elements/:boardId', async (req, res) => {
-    res.send('hi there');
+    const { success, data, error } = Uuid.safeParse(req.params.boardId);
+    if (!success) {
+        res.status(400).json({
+            message: "Invalid boardId",
+            boardId: req.params.boardId
+        });
+        return;
+    }
+    try {
+        const dbBoard = await prisma.board.findFirst({
+            where: {
+                id: data
+            }
+        });
+        if (!dbBoard) {
+            res.status(404).json({
+                message: "Board not found",
+                boardId: data
+            });
+            return;
+        }
+        const dbElements = await prisma.element.findMany({
+            where: {
+                boardId: dbBoard.id
+            }
+        });
+        res.json({
+            message: "Elements of the board",
+            boardId: dbBoard.id,
+            elements: dbElements
+        });
+        return;
+    } catch (err) {
+        console.log(JSON.stringify(err));
+        res.status(500).json({
+            message: "Error while getting elements"
+        });
+        return;
+    }
 });
 
 export { boardRoute }
