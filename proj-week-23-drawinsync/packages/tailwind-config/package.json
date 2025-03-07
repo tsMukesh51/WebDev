@@ -1,24 +1,12 @@
 {
   "name": "@repo/tailwind-config",
-  "version": "1.0.0",
-  "description": "",
-  "main": "tailwind.config.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "files": [
-    "tailwind.config.js"
-  ],
+  "version": "0.0.0",
+  "private": true,
   "exports": {
     ".": "./tailwind.config.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }
