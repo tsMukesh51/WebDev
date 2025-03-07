@@ -1,5 +1,5 @@
 {
-  "name": "proj-week-23-drawinsync",
+  "name": "proj-week-23-drawinsync-no-tailwind",
   "private": true,
   "scripts": {
     "build": "turbo run build",

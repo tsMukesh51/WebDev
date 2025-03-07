@@ -1,0 +1,23 @@
+{
+  "name": "@repo/db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "echo \"Nothing to test in @repo/db\""
+  },
+  "exports": {
+    "./client": "./index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "prisma": "^6.4.1"
+  },
+  "dependencies": {
+    "@prisma/client": "6.4.1"
+  }
+}
