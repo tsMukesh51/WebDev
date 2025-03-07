@@ -43,7 +43,7 @@ importers:
         specifier: ^4.0.11
         version: 4.0.11
       '@types/node':
-        specifier: ^20
+        specifier: ^20.17.23
         version: 20.17.23
       '@types/react':
         specifier: ^19
@@ -171,6 +171,12 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.20(postcss@8.5.3)
+      postcss:
+        specifier: ^8.5.3
+        version: 8.5.3
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@types/node@22.13.0)(typescript@5.7.3))
