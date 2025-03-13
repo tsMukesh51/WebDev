@@ -1,7 +1,9 @@
+import { DefaultSession } from "next-auth";
+
 declare module "next-auth" {
     interface User {
-        role?: Role;
-
+        username: string;
+        token: string;
     }
 
     interface Session extends DefaultSession {

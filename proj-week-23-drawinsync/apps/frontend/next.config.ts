@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { checkEnvVars } from "./lib/checkEnv"
 
 const nextConfig: NextConfig = {
   typescript: {

@@ -1,30 +1,28 @@
 import Image from "next/image";
 import logo from "../../frontend/public/logo.png";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
 import UserProfile from "../icons/userProfile";
+import { getServerSession } from "next-auth";
 
-export default function Page() {
-  const session = useSession();
+export default async function Page() {
+  const session = await getServerSession();
+  console.log(JSON.stringify(session));
   return (
     <main className="min-h-screen p-2">
       <header className="flex justify-between w-full">
         <div className="flex items-center">
           <Image src={logo} alt="logo" className="size-9 lg:size-18 mx-2" />
-          <p className="text-2xl lg:text-3xl">DrawInSync</p>
+          <Link href={"/"} className="text-2xl lg:text-3xl">DrawInSync</Link>
         </div>
-        {session.status == "unauthenticated" ?
+        {session?.user == null ?
           <div className="text-2xl text-white flex flex-row items-center justify-around">
-            <Link href={"/signup"}>Sign Up</Link>
-            <Link href={"/signin"}>Login</Link>
+            <Link href={"/signin"} className={"p-2 px-4 bg-blue-400 rounded-md"}>Login</Link>
           </div> :
           <button>
             <div className="w-2 h-2 bg-blue-600">
               <UserProfile />
             </div>
           </button>}
-
       </header>
       <section></section>
     </main>

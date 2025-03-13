@@ -57,8 +57,8 @@ userRoute.post('/signin', async (req, res) => {
     }
 
     try {
-        const oldUser = await prismaClient.user.findFirst({ where: { userName: data.userName } });
-        if (!oldUser) {
+        const dbUser = await prismaClient.user.findFirst({ where: { userName: data.userName } });
+        if (!dbUser) {
             res.status(404).json({
                 message: "User not found"
             });
@@ -70,7 +70,7 @@ userRoute.post('/signin', async (req, res) => {
             });
             return;
         }
-        const isAuthenticated = await argon2.verify(oldUser.password, data.password, { secret: Buffer.from(process.env.HASH_PASSWORD_SECRET) });
+        const isAuthenticated = await argon2.verify(dbUser.password, data.password, { secret: Buffer.from(process.env.HASH_PASSWORD_SECRET) });
         if (isAuthenticated) {
             if (!process.env.USER_JWT_SECRET) {
                 res.status(500).json({
@@ -78,9 +78,10 @@ userRoute.post('/signin', async (req, res) => {
                 });
                 return;
             }
-            const token = jwt.sign({ userId: oldUser.id, userName: oldUser.userName }, process.env.USER_JWT_SECRET, { expiresIn: 7 * 24 * 3600 });
+            const token = jwt.sign({ userId: dbUser.id, userName: dbUser.userName }, process.env.USER_JWT_SECRET, { expiresIn: 7 * 24 * 3600 });
             res.json({
                 message: 'Login successful',
+                user: dbUser,
                 token: token
             });
             return;

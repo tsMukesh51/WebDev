@@ -1,5 +1,5 @@
 {
-  "name": "drawinsync-http-backend",
+  "name": "http-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
