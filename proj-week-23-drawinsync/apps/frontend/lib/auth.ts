@@ -47,25 +47,20 @@ export const authOptions = {
                     jwt_token: `Bearer ${user.jwt_token}`
                 };
             }
-            console.log("New Token:", newToken);
+            // console.log("New Token:", newToken);
             return newToken;
         },
         session: async ({ session, token, user }) => {
-            console.log("Session called");
-            console.log("Token:", token);
-            console.log("Session:", session);
+            // console.log("Session:", session);
 
-            // if (token) {
-            //     session.user = {
-            //         ...session.user,
-            //         userName: token.userName as string,
-            //         token: token.token as string,
-            //         id: token.userId as string,
-            //         email: token.email,
-            //     };
-            // }
+            if (token) {
+                session.user = {
+                    ...session.user,
+                    jwt_token: token.jwt_token,
+                };
+            }
 
-            console.log("New Session:", session);
+            // console.log("New Session:", session);
             return { ...session, };
         }
 
