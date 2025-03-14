@@ -3,7 +3,8 @@ import logo from "../../frontend/public/logo.png";
 import Link from "next/link";
 import UserProfile from "../icons/userProfile";
 import { getServerSession } from "next-auth";
-
+import { ClientComp } from "../components/clientcomp";
+import { ClientSession } from "../components/clientSession"
 
 export default async function Page() {
   const secret = process.env.NEXTAUTH_SECRET;
@@ -26,7 +27,7 @@ export default async function Page() {
         </div>
         {session?.user == null ?
           <div className="text-2xl text-white flex flex-row items-center justify-around">
-            <Link href={"/signin"} className={"p-2 px-4 bg-blue-400 rounded-md"}>Login</Link>
+            <Link href={"/api/auth/signin"} className={"p-2 px-4 bg-blue-400 rounded-md"}>Login</Link>
           </div> :
           <button>
             <div className="w-2 h-2 bg-blue-600">
@@ -41,10 +42,13 @@ export default async function Page() {
             <p>Username: {session.user?.userName}</p>
             <p>Email: {session.user?.email}</p>
             <p>User ID: {session.user?.id}</p>
-            <p>Token: {session.user?.token}</p>
+            <p>Token: {session.user?.jwt_token}</p>
           </div>
         }
       </section>
+      <ClientComp>
+        <ClientSession></ClientSession>
+      </ClientComp>
     </main>
   );
 }

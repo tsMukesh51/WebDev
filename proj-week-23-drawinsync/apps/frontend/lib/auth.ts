@@ -31,7 +31,7 @@ export const authOptions = {
                     userName: verifiedUser.user.userName,
                     email: verifiedUser.user.email,
                     id: verifiedUser.user.id,
-                    token: verifiedUser.token,
+                    jwt_token: verifiedUser.token,
                 };
                 return user;
             }
@@ -39,17 +39,18 @@ export const authOptions = {
     ],
     secret: process.env.NEXTAUTH_SECRET || 'secr3t',
     callbacks: {
-        async jwt({ token, user, account, profile, trigger, session }) {
-            if (account) {
-                token.account = {
-                    ...account,
-                    access_token: `Bearer ${user.token}`  // <-- add token to JWT (Next's) object
+        jwt: async ({ token, user, account, profile, trigger, session }) => {
+            let newToken = { ...token };
+            if (user) {
+                newToken = {
+                    ...newToken,
+                    jwt_token: `Bearer ${user.jwt_token}`
                 };
             }
-            console.log("New Token:", token);
-            return token;
+            console.log("New Token:", newToken);
+            return newToken;
         },
-        async session({ session, token }) {
+        session: async ({ session, token, user }) => {
             console.log("Session called");
             console.log("Token:", token);
             console.log("Session:", session);
