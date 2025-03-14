@@ -8,11 +8,11 @@ import { getServerSession } from "next-auth";
 export default async function Page() {
   const secret = process.env.NEXTAUTH_SECRET;
   const session = await getServerSession();
+  console.log(JSON.stringify(session));
   // console.log((await req));
   // const token = await getToken({ req, secret }) // get JWT token from request
   // console.log('token ' + token);
   // const session = await getSession({ req }) // check if session exists
-  console.log(JSON.stringify(session));
   //   const response = await fetch(`${process.env.HTTP_SERVER_URL}/board/my-boards`, {
   //     method: "GET",
   //     headers: { "Content-Type": "application/json", "Authorization": token}

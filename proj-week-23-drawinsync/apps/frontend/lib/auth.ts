@@ -65,7 +65,7 @@ export const authOptions = {
             // }
 
             console.log("New Session:", session);
-            return { ...session };
+            return { ...session, };
         }
 
     }
