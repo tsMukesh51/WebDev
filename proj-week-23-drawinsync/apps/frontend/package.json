@@ -22,6 +22,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/lib": "workspace:*",
     "@types/node": "^22.13.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -29,6 +30,6 @@
     "eslint": "^9.21.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
-    "typescript": "5.7.3"
+    "typescript": "^5.7.3"
   }
 }

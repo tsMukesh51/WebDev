@@ -1,26 +1,72 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { LoginUserSchema } from '@repo/lib/types';
+import { JWT } from 'next-auth/jwt';
+import { NextAuthOptions } from 'next-auth';
 export const authOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                username: { label: "username", type: "text", placeholder: "ramcharan" },
+                userName: { label: "username", type: "text", placeholder: "ramcharan" },
                 password: { label: "password", type: "password", placeholder: "P@ssw0rd" }
             },
-            async authorize(credentials, req) {
-                const verifiedUser = await fetch(`${process.env.HTTP_SERVER_URL}/user/signin`, {
+            authorize: async (credentials, req) => {
+                const { success, data, error } = LoginUserSchema.safeParse(credentials);
+                if (!success) {
+                    return null;
+                }
+                const response = await fetch(`${process.env.HTTP_SERVER_URL}/user/signin`, {
                     method: "POST",
-                    body: JSON.stringify(credentials),
+                    body: JSON.stringify(data),
                     headers: { "Content-Type": "application/json" }
                 });
-                if (verifiedUser.ok) {
-                    const userDetails = verifiedUser.user;
-                    userDetails.token = verifiedUser.token;
-                    return userDetails;
+                if (!response.ok) {
+                    return null;
                 }
-                return null;
+                const verifiedUser = await response.json();
+                // const userDetails = verifiedUser.user;
+                // userDetails.token = verifiedUser.token;
+                // console.log(verifiedUser);
+                const user = {
+                    userName: verifiedUser.user.userName,
+                    email: verifiedUser.user.email,
+                    id: verifiedUser.user.id,
+                    token: verifiedUser.token,
+                };
+                return user;
             }
         })
     ],
     secret: process.env.NEXTAUTH_SECRET || 'secr3t',
-}
+    callbacks: {
+        async jwt({ token, user, account, profile, trigger, session }) {
+            if (account) {
+                token.account = {
+                    ...account,
+                    access_token: `Bearer ${user.token}`  // <-- add token to JWT (Next's) object
+                };
+            }
+            console.log("New Token:", token);
+            return token;
+        },
+        async session({ session, token }) {
+            console.log("Session called");
+            console.log("Token:", token);
+            console.log("Session:", session);
+
+            // if (token) {
+            //     session.user = {
+            //         ...session.user,
+            //         userName: token.userName as string,
+            //         token: token.token as string,
+            //         id: token.userId as string,
+            //         email: token.email,
+            //     };
+            // }
+
+            console.log("New Session:", session);
+            return { ...session };
+        }
+
+    }
+} satisfies NextAuthOptions;
