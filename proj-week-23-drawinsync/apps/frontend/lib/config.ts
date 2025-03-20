@@ -1,0 +1,1 @@
+export const EXPIRATIONTIME = 7 * 24 * 3600 - 300;

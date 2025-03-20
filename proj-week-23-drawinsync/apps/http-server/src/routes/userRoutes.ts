@@ -78,11 +78,13 @@ userRoute.post('/signin', async (req, res) => {
                 });
                 return;
             }
-            const token = jwt.sign({ userId: dbUser.id, userName: dbUser.userName }, process.env.USER_JWT_SECRET, { expiresIn: 7 * 24 * 3600 });
+            const expirationDate = Math.floor(Date.now() / 1000) + (7 * 24 * 3600);
+            const token = jwt.sign({ exp: expirationDate, userId: dbUser.id, userName: dbUser.userName }, process.env.USER_JWT_SECRET);
             res.json({
                 message: 'Login successful',
                 user: dbUser,
-                token: token
+                token: token,
+                expiresAt: expirationDate
             });
             return;
         } else {

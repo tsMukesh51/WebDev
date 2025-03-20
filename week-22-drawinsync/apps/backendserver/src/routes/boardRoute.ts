@@ -26,12 +26,14 @@ boardRoute.post('/create', userAuth, async (req, res) => {
         })
         res.json({
             message: 'board created'
-        })
+        });
+        return;
     } catch (err) {
         console.log(err);
         res.status(500).send({
             message: 'Something went wrong'
         })
+        return;
     }
 });
 

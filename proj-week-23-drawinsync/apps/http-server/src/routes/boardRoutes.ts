@@ -12,12 +12,32 @@ boardRoute.get('/my-boards', async (req, res) => {
         const userBoards = await prismaClient.board.findMany(
             {
                 where: {
-                    ownerId: req.userId
+                    deletedAt: null,
+                    BoardCollaborators: {
+                        some: {
+                            collaboratorId: req.userId
+                        }
+                    }
+
+                },
+                include: {
+                    BoardCollaborators: true,
                 }
             });
+        const userBoardsList = {
+            userBoards: [] as any[],
+            sharedBoards: [] as any[]
+        };
+        userBoards.forEach((board) => {
+            if (board.ownerId == req.userId)
+                userBoardsList.userBoards.push(board);
+            else
+                userBoardsList.sharedBoards.push(board);
+        })
         res.json({
             message: "List of your boards",
-            boardList: userBoards
+            ownedBoardList: userBoardsList.userBoards,
+            sharedBoardList: userBoardsList.sharedBoards
         });
         return;
     } catch (err) {
@@ -29,34 +49,34 @@ boardRoute.get('/my-boards', async (req, res) => {
     }
 });
 
-boardRoute.get('/shared-we-me', async (req, res) => {
-    try {
-        const userBoards = await prismaClient.board.findMany(
-            {
-                where: {
-                    NOT: {
-                        ownerId: req.userId,
-                    },
-                    BoardCollaborators: {
-                        some: {
-                            collaboratorId: req.userId
-                        }
-                    }
-                }
-            });
-        res.json({
-            message: "List of boards shared with you",
-            boardList: userBoards
-        });
-        return;
-    } catch (err: any) {
-        console.log(JSON.stringify(err));;
-        res.status(500).json({
-            message: "DB error while getting boards"
-        });
-        return;
-    }
-});
+// boardRoute.get('/shared-we-me', async (req, res) => {
+//     try {
+//         const userBoards = await prismaClient.board.findMany(
+//             {
+//                 where: {
+//                     NOT: {
+//                         ownerId: req.userId,
+//                     },
+//                     BoardCollaborators: {
+//                         some: {
+//                             collaboratorId: req.userId
+//                         }
+//                     }
+//                 }
+//             });
+//         res.json({
+//             message: "List of boards shared with you",
+//             boardList: userBoards
+//         });
+//         return;
+//     } catch (err: any) {
+//         console.log(JSON.stringify(err));;
+//         res.status(500).json({
+//             message: "DB error while getting boards"
+//         });
+//         return;
+//     }
+// });
 
 boardRoute.post('/create', async (req, res) => {
     const { success, data, error } = CreateBoard.safeParse(req.body);
@@ -275,7 +295,7 @@ boardRoute.get('/slug-board-id/:slug', async (req, res) => {
 
 })
 
-boardRoute.get('/board-details-by-id/:boardId', async (req, res) => {
+boardRoute.get('/id-board-details/:boardId', async (req, res) => {
     if (!req.params.boardId) {
         res.status(400).json({
             message: "BoardId is Empty"
