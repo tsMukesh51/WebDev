@@ -1,3 +1,4 @@
-Todo List 
+# TODO for DrawInSunc
 
-[ ] Add createOrlogin in backend or make signup page
+## Changes to make
+- [ ] Add createOrlogin in backend or make signup page

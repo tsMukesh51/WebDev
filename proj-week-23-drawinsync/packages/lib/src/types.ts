@@ -21,7 +21,7 @@ export const LoginUserSchema = z.object({
 export const CreateBoard = z.object({
     boardName: z.string().min(3).max(40),
     slug: z.string().min(6).max(60).refine((str) => {
-        return typeof str === "string" ? /^[a-z0-9]+$/.test(str) : false;
+        return typeof str === "string" ? /^[a-z0-9-]+$/.test(str) : false;
     }, "slug must be 6 to 60 chars and must contain small english letters and numbers"),
 });
 

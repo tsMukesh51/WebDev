@@ -1,5 +1,5 @@
 import { NextFunction, Router } from "express";
-import { something, userAuth } from "../middlewares/auth";
+import { something, userAuth } from "../middlewares/auth.js";
 import { prismaClient } from "@repo/db/client";
 import { collaboratorEnum, CreateBoard, UpdateCollaborator, Uuid } from "@repo/lib/types";
 import jwt from "jsonwebtoken";
