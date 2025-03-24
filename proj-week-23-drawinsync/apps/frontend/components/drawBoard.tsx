@@ -16,7 +16,6 @@ export interface IDrawBoard {
 }
 
 export function DrawBoard({ elements, collaborators, board, session }: IDrawBoard) {
-    const socket = new WebSocket('ws://localhost:8080');
     const [authed, setAuthed] = useState(false);
     const [selectedShape, setSelectedShape] = useState<Prisma.ShapeType>(Prisma.ShapeType.RECTANGLE);
     const wsToken = useRef<string>("");
@@ -24,10 +23,11 @@ export function DrawBoard({ elements, collaborators, board, session }: IDrawBoar
     const canvasRef = useRef<HTMLCanvasElement>(null);
     // @ts-ignore
     const drawer = useRef<Drawer>(null);
+    const socket = useRef<WebSocket>(null);
 
 
     const connectWS = () => {
-        fetch(`http://localhost:3000/board/get-token/${board.id}`, {
+        fetch(`${process.env.HTTP_SERVER_URL}/board/get-token/${board.id}`, {
             method: "GET",
             headers: { "Content-Type": "application/json", "Authorization": token }
         }).then((res) => {
@@ -35,33 +35,30 @@ export function DrawBoard({ elements, collaborators, board, session }: IDrawBoar
                 return res.json();
             console.log('error getting ws-token' + JSON.stringify(res));
         }).then((data) => {
-            wsToken.current = data.wsToken;
-            // setAuthed(true);
+            socket.current = new WebSocket(`${process.env.WS_SERVER_URL}?token=${data.wsToken}`);
+            socket.current.onopen = function () {
+                setAuthed(true);
+            };
         });
-        socket.onopen = function () {
-            setAuthed(true);
-        };
     }
 
     useEffect(() => {
         connectWS();
         return () => {
-            if (socket.OPEN)
-                socket.close();
+            if (socket.current && socket.current.OPEN)
+                socket.current.close();
         }
     }, []);
 
     useEffect(() => {
-        if (authed && socket.OPEN && canvasRef.current) {
-            drawer.current = new Drawer({ canvas: canvasRef.current, elements, socket, board });
+        if (authed && socket.current && socket.current.OPEN && canvasRef.current) {
+            drawer.current = new Drawer({ canvas: canvasRef.current, elements, socket: socket.current, board });
             canvasRef.current?.classList.remove('hidden');
         }
     }, [authed]);
 
     useEffect(() => {
-        console.log(drawer); // null
         if (drawer.current) {
-            console.log(selectedShape);
             drawer.current.selectShape(selectedShape);
         }
     }, [selectedShape])
@@ -69,7 +66,7 @@ export function DrawBoard({ elements, collaborators, board, session }: IDrawBoar
     return <div className="z-[0]">
         <ShapeOptions selectedShape={selectedShape} setSelectedShape={setSelectedShape}></ShapeOptions>
         {authed ?
-            <canvas ref={canvasRef} width={1280} height={720} className="bg-slate-950 hidden z-[1]"></canvas> :
+            <canvas ref={canvasRef} width={3840} height={2160} className="bg-slate-950 hidden z-[1]"></canvas> :
             <p className="z-[1]">connecting</p>}
     </div>
 }

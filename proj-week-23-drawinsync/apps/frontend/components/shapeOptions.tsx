@@ -10,7 +10,7 @@ export interface IShapeOptions {
 }
 
 export function ShapeOptions({ selectedShape: shapeOpProp, setSelectedShape: setShapeOpProp }: IShapeOptions) {
-    return <div className="fixed top-10 left-1/2 z-[2] flex">
+    return <div className="fixed top-10 left-1/2 z-[2] flex bg-zinc-200 rounded gap-2 p-1">
         <button onClick={() => setShapeOpProp(Prisma.ShapeType.RECTANGLE)}>
             <RectangleIcon className={(shapeOpProp == Prisma.ShapeType.RECTANGLE ? "stroke-cyan-500 " : "stroke-black ") + "size-8"} />
         </button>
