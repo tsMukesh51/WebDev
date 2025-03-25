@@ -1,4 +1,5 @@
 import { Prisma } from "@repo/db/client"
+import { Dispatch, SetStateAction } from "react";
 
 type IShapeProperties = {
     startPointX: number,
@@ -15,7 +16,7 @@ interface IDrawer {
 }
 
 export class Drawer {
-    socket: WebSocket;
+    ws: WebSocket;
     board: Prisma.Board;
     canvas: HTMLCanvasElement;
     drawContext: CanvasRenderingContext2D;
@@ -26,7 +27,7 @@ export class Drawer {
 
     constructor({ canvas, socket, elements, board }: IDrawer) {
         this.canvas = canvas;
-        this.socket = socket
+        this.ws = socket
         this.syncedElements = Array.isArray(elements) ? elements : [];
         this.board = board;
         this.drawContext = this.canvas.getContext('2d')!;
@@ -39,6 +40,16 @@ export class Drawer {
                 endPointY: 0
             }
         };
+
+        // bug when joining, if shape is added will be missed.
+        this.ws.onmessage = (message) => {
+            console.log(`message received`, message.data)
+        }
+        this.ws.send(JSON.stringify({
+            msgType: 'SHAPE',
+            eleType: 'ADD',
+            element: this.currEle
+        }));
 
         canvas.addEventListener('mousedown', (evt) => {
             this.mouseDownHandler(evt);

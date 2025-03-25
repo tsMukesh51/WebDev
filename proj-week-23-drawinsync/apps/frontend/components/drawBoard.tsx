@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ShapeOptions } from "./shapeOptions";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { Session } from "next-auth";
 import { Drawer } from "../lib/drawer";
 import { Prisma } from "@repo/db/client";
@@ -24,9 +22,34 @@ export function DrawBoard({ elements, collaborators, board, session }: IDrawBoar
     // @ts-ignore
     const drawer = useRef<Drawer>(null);
     const socket = useRef<WebSocket>(null);
+    const retryCount = useRef(0);
 
+    const connectWs = () => {
+        socket.current = new WebSocket(`${process.env.WS_SERVER_URL}?token=${wsToken.current}`);
+        socket.current.onopen = function () {
+            setAuthed(true);
+            retryCount.current = 0;
+        };
+        socket.current.onclose = (ev) => {
+            retryCount.current++;
+            setAuthed(false);
+            if (retryCount.current == 0) {
+                console.log('trying to connect');
+                connectWs();
+            } else if (retryCount.current < 75) {
+                console.log('trying to connect');
+                setTimeout(connectWs, 3000);
+            } else {
+                console.log('failed to connect to wss');
+            }
+        }
+        socket.current.onerror = (ev) => {
+            console.error("WebSocket error:", ev);
+            socket.current?.close();
+        }
+    }
 
-    const connectWS = () => {
+    const getToken = () => {
         fetch(`${process.env.HTTP_SERVER_URL}/board/get-token/${board.id}`, {
             method: "GET",
             headers: { "Content-Type": "application/json", "Authorization": token }
@@ -35,20 +58,23 @@ export function DrawBoard({ elements, collaborators, board, session }: IDrawBoar
                 return res.json();
             console.log('error getting ws-token' + JSON.stringify(res));
         }).then((data) => {
-            socket.current = new WebSocket(`${process.env.WS_SERVER_URL}?token=${data.wsToken}`);
-            socket.current.onopen = function () {
-                setAuthed(true);
-            };
+            wsToken.current = data.wsToken;
+            connectWs();
         });
     }
 
     useEffect(() => {
-        connectWS();
+        getToken();
         return () => {
             if (socket.current && socket.current.OPEN)
                 socket.current.close();
         }
     }, []);
+
+    // useEffect(() => {
+    //     if (wsToken.current != "")
+    //         connectWs();
+    // }, [wsToken]);
 
     useEffect(() => {
         if (authed && socket.current && socket.current.OPEN && canvasRef.current) {
