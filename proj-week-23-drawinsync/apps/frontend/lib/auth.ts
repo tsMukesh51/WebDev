@@ -59,6 +59,7 @@ export const authOptions = {
             if (user) {
                 newToken = {
                     ...newToken,
+                    id: user.id,
                     accessToken: `Bearer ${user.jwtToken}`,
                 };
             }
@@ -68,6 +69,7 @@ export const authOptions = {
             if (token) {
                 session.user = {
                     ...session.user,
+                    id: token.id,
                     token: token.accessToken,
                 };
             }

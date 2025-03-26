@@ -43,23 +43,9 @@ export default async function boardView({ params }: { params: Promise<{ slug: st
         </div>
     }
 
-    const elementsRes = await fetch(`${process.env.HTTP_SERVER_URL}/board/elements/${idBoardDetailsData.board.id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json", "Authorization": token }
-    });
-    const elementsData = await elementsRes.json();
-    if (elementsRes.status != 200) {
-        console.log(elementsRes);
-        console.log(elementsData);
-        return <div>
-            <p>Error: {elementsData.message}</p>
-            <Link href={"/api/auth/signin"} />
-        </div>
-    }
-
     return <div>
         <ClientComp>
-            <DrawBoard elements={elementsData} collaborators={idBoardDetailsData.collaborators} board={idBoardDetailsData.board} session={session} />
+            <DrawBoard collaborators={idBoardDetailsData.collaborators} board={idBoardDetailsData.board} session={session} />
         </ClientComp>
     </div>
 }

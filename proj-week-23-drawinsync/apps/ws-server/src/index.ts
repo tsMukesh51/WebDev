@@ -1,9 +1,9 @@
 import { WebSocket, WebSocketServer } from "ws";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { Prisma } from "@repo/db/client";
+import { Prisma, prismaClient } from "@repo/db/client";
 
-const connectedOnes: Record<string, WebSocket[]> = {};
+const connectedOnes: Record<string, WebSocketEx[]> = {};
 interface Connecson {
     boardId: string,
     collaboratorId: string,
@@ -16,9 +16,11 @@ interface PushMsg {
     element: Partial<Prisma.Element> & { localId: string }
 }
 
-dotenv.config();
+interface WebSocketEx extends WebSocket {
+    boardId?: string
+}
+
 const wss = new WebSocketServer({ port: 8080 });
-console.log("listening at 8080");
 
 wss.on('connection', (ws, req) => {
     const params = new URLSearchParams(req.url?.split('?')[1]);
@@ -50,13 +52,23 @@ wss.on('connection', (ws, req) => {
         connectedOnes[connecson.boardId] = [];
     }
     connectedOnes[connecson.boardId]?.push(ws);
-    console.log(connectedOnes);
+    setInterval(() => {
+        Object.keys(connectedOnes).forEach((boardId) => {
+            connectedOnes[boardId]?.forEach((client, index) => {
+                if (client.readyState === WebSocket.CLOSED) {
+                    connectedOnes[boardId]?.splice(index, 1);
+                } else {
+                    client.ping();
+                }
+            });
+        });
+    }, 30000);
     ws.on('message', (data) => {
         const msg: PushMsg = JSON.parse(data.toString());
         console.log(msg);
         if (msg.msgType == 'SHAPE') {
             if (msg.eleType == "ADD") {
-                // upload to database
+                prismaClient.element
             }
             // update database
             connectedOnes[connecson.boardId]?.forEach((ws) => {
@@ -64,5 +76,26 @@ wss.on('connection', (ws, req) => {
                 ws.send(JSON.stringify(msg));
             });
         }
-    })
+    });
+    ws.on('close', () => {
+        Object.keys(connectedOnes).forEach((boardId, index) => {
+            connectedOnes[boardId]?.filter((clientWs) => {
+                return clientWs !== ws;
+            });
+            if (connectedOnes[boardId]?.length === 0) {
+                delete connectedOnes[boardId];
+            }
+        })
+    });
 });
+
+async function main() {
+    dotenv.config();
+    try {
+        await prismaClient.$connect();
+        console.log("listening at 8080");
+    } catch (err) {
+        wss.close();
+        console.log('failed to connect prisma ' + err);
+    }
+}
