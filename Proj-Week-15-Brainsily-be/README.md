@@ -12,6 +12,24 @@ Check out the live application here: [Brainsily Live](https://brainsily.vercel.a
 
 ---
 
+## **Project Overview**
+
+Brainsily is a robust backend engine designed to manage and share content. It provides features like user authentication, content CRUD, and public brain-sharing. Manage content types like Tweets, YouTube, and Text with ease.
+
+This is a **practice project**, and the primary focus is on:
+
+- Strengthening backend development skills.
+- Utilizing modern technologies like Express.js, TypeScript, and MongoDB.
+- Implementing modular and scalable project structures.
+
+---
+
+## **Project Architecture**
+
+The Brainsily backend is a MERN-based application built with Express.js, managing API endpoints in `index.ts` with JWT authentication and Mongoose schemas (`db.ts`) for User, Content, Tag, and ContentTagLink models. The `middleware/user.ts` handles authentication, while `Utils` and `types` support encryption and type safety. Data flows from API requests to MongoDB storage, validated by Zod—all custom-built with no external services. It’s a proof-of-concept focused on functionality and growth.
+
+---
+
 ## Tech Stack
 
 - **Language**: TypeScript
