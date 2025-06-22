@@ -26,7 +26,7 @@ Check out the live application here: [Brainsily Live](https://brainsily.vercel.a
 
 ## **Project Overview**
 
-Brainsily is a single-page application designed to help users manage and share content. It features a seamless user experience with routing, form handling, and interactive dashboards. 
+Brainsily is a single-page application designed to help users manage and share content. It features a seamless user experience with notes keeping web app for organizing and accessing your favorite content. Manage your content of types like (Tweet, YouTube, Text) and share it publicly.
 
 This is a **practice project**, and the primary focus is on:
 - Strengthening frontend development skills.
@@ -37,13 +37,13 @@ This is a **practice project**, and the primary focus is on:
 
 ## **Tech Stack**
 
-- React 18.3.1
-- React Router DOM 7.1.1
-- TypeScript 5.7.2
-- TailwindCSS 3.4.17
-- Axios 1.7.9
-- Vite 6.0.3
-- Zod (for runtime validation)
+- React 18
+- React Router DOM 7
+- TypeScript 5.7
+- TailwindCSS 3.4
+- Axios
+- Vite 6
+- Zod 3 (for runtime validation)
 
 ---
 
