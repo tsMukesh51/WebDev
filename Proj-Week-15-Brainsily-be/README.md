@@ -40,9 +40,9 @@ graph TD
     D --> H[Response to Client]
 
     %% Styling for better readability
-    classDef client fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef server fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef database fill:#bfb,stroke:#333,stroke-width:2px;
+    classDef client fill:#f9f,stroke:#333,stroke-width:2px,color:#100c08;
+    classDef server fill:#bbf,stroke:#333,stroke-width:2px,color:#100c08;
+    classDef database fill:#bfb,stroke:#333,stroke-width:2px,color:#100c08;
     class A client;
     class B,C,D,E server;
     class F,G database;
