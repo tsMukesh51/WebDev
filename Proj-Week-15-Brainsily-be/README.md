@@ -29,16 +29,23 @@ This is a **practice project**, and the primary focus is on:
 
 ```mermaid
 graph TD
-    A[Client Request] --> B[Express.js (index.ts)]
-    B --> C[Middleware (user.ts)<br>Authentication & Validation]
-    C --> D[Controllers (index.ts Endpoints)]
-    D --> E[Services (Custom Logic)]
-    E --> F[MongoDB<br>via Mongoose (db.ts)]
-    F --> G[User, Content, Tag, ContentTagLink Models]
+    A[Client Request] --> B[Express.js Server]
+    B --> C["Middleware<br>(Authentication & Validation)"]
+    C --> D["Controllers<br>(API Endpoints)"]
+    D --> E["Services<br>(Business Logic)"]
+    E --> F["MongoDB<br>(via Mongoose)"]
+    F --> G["Models<br>(User, Content, Tag, ContentTagLink)"]
     G --> E
     E --> D
     D --> H[Response to Client]
-    C --> H
+
+    %% Styling for better readability
+    classDef client fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef server fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef database fill:#bfb,stroke:#333,stroke-width:2px;
+    class A client;
+    class B,C,D,E server;
+    class F,G database;
 ```
 
 The Brainsily backend is a MERN-based application built with Express.js, managing API endpoints in `index.ts` with JWT authentication and Mongoose schemas (`db.ts`) for User, Content, Tag, and ContentTagLink models. The `middleware/user.ts` handles authentication, while `Utils` and `types` support encryption and type safety. Data flows from API requests to MongoDB storage, validated by Zod—all custom-built with no external services. It’s a proof-of-concept focused on functionality and growth.
