@@ -26,6 +26,21 @@ This is a **practice project**, and the primary focus is on:
 
 ## **Project Architecture**
 
+
+```mermaid
+graph TD
+    A[Client Request] --> B[Express.js (index.ts)]
+    B --> C[Middleware (user.ts)<br>Authentication & Validation]
+    C --> D[Controllers (index.ts Endpoints)]
+    D --> E[Services (Custom Logic)]
+    E --> F[MongoDB<br>via Mongoose (db.ts)]
+    F --> G[User, Content, Tag, ContentTagLink Models]
+    G --> E
+    E --> D
+    D --> H[Response to Client]
+    C --> H
+```
+
 The Brainsily backend is a MERN-based application built with Express.js, managing API endpoints in `index.ts` with JWT authentication and Mongoose schemas (`db.ts`) for User, Content, Tag, and ContentTagLink models. The `middleware/user.ts` handles authentication, while `Utils` and `types` support encryption and type safety. Data flows from API requests to MongoDB storage, validated by Zod—all custom-built with no external services. It’s a proof-of-concept focused on functionality and growth.
 
 ---
