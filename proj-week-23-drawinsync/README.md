@@ -1,4 +1,4 @@
-# DrawInSync Backend
+# DrawInSync
 
 DrawInSync is a collaborative drawing web app, enabling multiple users to draw on the same board simultaneously. This backend handles user management, board creation, collaboration, and real-time synchronization.
 
