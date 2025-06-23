@@ -1,58 +1,150 @@
-# Turborepo Tailwind CSS starter
+# DrawInSync Backend
 
-This Turborepo starter is maintained by the Turborepo core team.
+DrawInSync is a collaborative drawing web app, enabling multiple users to draw on the same board simultaneously. This backend handles user management, board creation, collaboration, and real-time synchronization.
 
-## Using this example
+---
 
-Run the following command:
+## Live Demo
 
-```sh
-npx create-turbo@latest -e with-tailwind
+Check out the live application here: [DrawInSync Live](https://drawinsync.vercel.app/) *(Note: May be unavailable if still in development)*
+
+---
+
+## **Table of Contents**
+
+1. [Project Overview](#project-overview)
+2. [Tech Stack](#tech-stack)
+3. [Setup Instructions](#setup-instructions)
+4. [Available Scripts](#available-scripts)
+5. [Features](#features)
+6. [Acknowledgements](#acknowledgements)
+
+---
+
+## **Project Overview**
+
+DrawInSync is a collaborative web app where multiple users can draw on the same board simultaneously. It provides features like user authentication, board management, and real-time synchronization of Elements across all device active on the board.
+
+This is a **practice project**, and the primary focus is on:
+- Strengthening understanding System Design making trade offs.
+- Utilizing modern technologies like Next.js, Express, PostgreSQL (Prisma), and WebSocket.
+- Implementing modular and scalable project structures.
+
+---
+
+## **Project Architecture**
+
+```mermaid
+graph TD
+    A[Client Request] --> B[Next.js API Routes]
+    B --> C["Middleware<br>(Authentication & Validation)"]
+    C --> D["Controllers<br>(API & WebSocket Handlers)"]
+    D --> E["Services<br>(Business Logic)"]
+    E --> F["PostgreSQL<br>(via Prisma)"]
+    F --> G["Models<br>(User, Board, BoardCollaborator, Element)"]
+    G --> E
+    E --> D
+    D --> H[Response/WebSocket Updates to Client]
+    C --> H
+    %% Styling for better readability
+    classDef client fill:#f9f,stroke:#333,stroke-width:2px,color:#100c08;
+    classDef server fill:#bbf,stroke:#333,stroke-width:2px,color:#100c08;
+    classDef database fill:#bfb,stroke:#333,stroke-width:2px,color:#100c08;
+    class A client;
+    class B,C,D,E server;
+    class F,G database;
 ```
 
-## What's inside?
+The DrawInSync backend is a Next.js-based application integrated with Express for API routes and WebSocket for real-time drawing synchronization. It uses Prisma to manage PostgreSQL, with models for User, Board, BoardCollaborator, and Element. Middleware handles authentication and validation (via Zod), while services manage business logic. Data flows from client requests to PostgreSQL via Prisma, with WebSocket updates ensuring simultaneous drawing across users—all custom-built for this collaborative proof-of-concept.
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## **Tech Stack**
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- **Framework**: Next.js with Express
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Real-Time**: WebSocket for synchronization
+- **Validation**: Zod for schema validation
+- **Utilities**: dotenv for environment variables
+- **Monorepo**: TurboRepo for project management
+- **Styling**: TailwindCSS (for potential backend UI or frontend integration)
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+---
 
-### Building packages/ui
+## **Setup Instructions**
 
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+### Prerequisites
+Ensure you have the following installed:
+- Node.js (version 16 or higher)
+- pnpm enabled
+- PostgreSQL instance (local or cloud)
 
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
+### Steps
 
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/tsMukesh51/WebDev.git
+   cd ...WebDev/proj-week-23-drawinsync
+   ```
 
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
 
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
-```
+3. Create a `.env` file based on the provided `env.example` in `packages/db`, `http-server`, `ws-server`:
+   ```bash
+   DATABASE_URL=postgresql://user:password@localhost:5432/drawinsync
+   ```
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+4. Build the project:
+   ```bash
+   npm run build
+   ```
 
-### Utilities
+5. Start the server:
+   ```bash
+   npm start
+   ```
 
-This Turborepo has some additional tools already setup for you:
+6. For development:
+   ```bash
+   npm run dev
+   ```
 
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+The http-server runs on `http://localhost:3000` by default.
+The Next.js runs on `http://localhost:4200` by default.
+
+---
+
+## **Available Scripts**
+
+### **`pnpm run dev`**
+Runs the app in development mode using Next.js. The server will automatically reload for any changes.
+
+### **`pnpm run build`**
+Builds the app for production. The build artifacts will be output to the appropriate folder.
+
+### **`pnpm run start`**
+Starts the production server.
+
+---
+
+## **Features**
+
+- **User Signup & Login**: Create and authenticate user accounts.
+- **Board Creation**: Initialize a new drawing board with a unique slug.
+- **Collaboration**: Manage collaborators with EDITOR or VIEWER roles.
+- **Real-Time Drawing**: Synchronize drawing elements (RECTANGLE, CIRCLE, LINE) across users via WebSocket.
+- **Element Management**: Store and update drawing shapes with properties.
+
+Find API Doc in [endpoint.md](endpoint.md) *(to be created)*
+
+---
+
+## **Acknowledgements**
+
+Special thanks to my mentor **[Kirat](https://github.com/hkirat)** for guiding me through the initial stages of this project and helping me understand backend development principles.
+
+---
